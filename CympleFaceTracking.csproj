@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions">
+      <HintPath>..\..\VRCFaceTracking-master\VRCFaceTracking\bin\x64\Debug\net7.0-windows10.0.19041.0\win10-x64\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing.Common">
+      <HintPath>..\..\..\.nuget\packages\system.drawing.common\7.0.0\lib\net7.0\System.Drawing.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="VRCFaceTracking.Core">
+      <HintPath>VRCFaceTracking.Core.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

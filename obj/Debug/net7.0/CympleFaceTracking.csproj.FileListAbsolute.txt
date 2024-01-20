@@ -1,0 +1,17 @@
+C:\Users\Administrator\Desktop\CympleFaceTracking\CympleFaceTracking\obj\Debug\net7.0\CympleFaceTracking.csproj.AssemblyReference.cache
+C:\Users\Administrator\Desktop\CympleFaceTracking\CympleFaceTracking\obj\Debug\net7.0\CympleFaceTracking.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Administrator\Desktop\CympleFaceTracking\CympleFaceTracking\obj\Debug\net7.0\CympleFaceTracking.AssemblyInfoInputs.cache
+C:\Users\Administrator\Desktop\CympleFaceTracking\CympleFaceTracking\obj\Debug\net7.0\CympleFaceTracking.AssemblyInfo.cs
+C:\Users\Administrator\Desktop\CympleFaceTracking\CympleFaceTracking\obj\Debug\net7.0\CympleFaceTracking.csproj.CoreCompileInputs.cache
+C:\Users\Administrator\Desktop\CympleFaceTracking\CympleFaceTracking\bin\Debug\net7.0\CympleFaceTracking.deps.json
+C:\Users\Administrator\Desktop\CympleFaceTracking\CympleFaceTracking\bin\Debug\net7.0\CympleFaceTracking.dll
+C:\Users\Administrator\Desktop\CympleFaceTracking\CympleFaceTracking\bin\Debug\net7.0\CympleFaceTracking.pdb
+C:\Users\Administrator\Desktop\CympleFaceTracking\CympleFaceTracking\bin\Debug\net7.0\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\Administrator\Desktop\CympleFaceTracking\CympleFaceTracking\bin\Debug\net7.0\VRCFaceTracking.Core.dll
+C:\Users\Administrator\Desktop\CympleFaceTracking\CympleFaceTracking\obj\Debug\net7.0\CympleFaceTracking.csproj.CopyComplete
+C:\Users\Administrator\Desktop\CympleFaceTracking\CympleFaceTracking\obj\Debug\net7.0\CympleFaceTracking.dll
+C:\Users\Administrator\Desktop\CympleFaceTracking\CympleFaceTracking\obj\Debug\net7.0\refint\CympleFaceTracking.dll
+C:\Users\Administrator\Desktop\CympleFaceTracking\CympleFaceTracking\obj\Debug\net7.0\CympleFaceTracking.pdb
+C:\Users\Administrator\Desktop\CympleFaceTracking\CympleFaceTracking\obj\Debug\net7.0\ref\CympleFaceTracking.dll
+C:\Users\Administrator\Desktop\CympleFaceTracking\CympleFaceTracking\bin\Debug\net7.0\System.Drawing.Common.dll
+C:\Users\Administrator\Desktop\CympleFaceTracking\CympleFaceTracking\bin\Debug\net7.0\System.Drawing.Common.xml
