@@ -8,6 +8,7 @@ namespace CympleFaceTracking
 {
     class CympleFaceDataStructs
     {
+        public int flags;
         public float noseSneerLeft;
         public float noseSneerRight;
         public float jawOpen;
@@ -28,11 +29,20 @@ namespace CympleFaceTracking
         public float Smile_R;
         public float Sad_L;
         public float Sad_R;
-        public float tongueOut;
         public float tongueX;
         public float tongueY;
         public float cheekPuffLeft;
         public float cheekPuffRight;
+        public float tongueOut;
+        public float eyePitch;
+        public float eyeYaw_L;
+        public float eyeYaw_R;
+        public float eyeLidCloseLeft;
+        public float eyeLidCloseRight;
+        public float eyeSquintLeft;
+        public float eyeSquintRight;
+        public float browUpDownLeft;
+        public float browUpDownRight;
     }
     public static class Constants
     {
@@ -58,14 +68,32 @@ namespace CympleFaceTracking
             "Smile_R",
             "Sad_L",
             "Sad_R",
-            "tongueOut",
             "tongueX",
             "tongueY",
             "cheekPuffLeft",
             "cheekPuffRight",
-
+            "tongueOut",
+            "eyeX", 
+            "eyeY",
+            "eyeLidLeft",
+            "eyeLidRight",
+            "eyeSquintLeft",
+            "eyeSquintRight",
+            "browLowererLeft",
+            "browLowererRight",
+            "browOuterUpLeft",
+            "browOuterUpRight",
+            "eyePitch",
+            "eyeYaw_L",
+            "eyeYaw_R",
+            "eyeLidCloseLeft",
+            "eyeLidCloseRight",
+            "eyeSquintLeft",
+            "eyeSquintRight",
+            "browUpDownLeft",
+            "browUpDownRight"
     };
-        public static int Port = 23300;
+        public static int Port = 23304;
     }
 }
 
