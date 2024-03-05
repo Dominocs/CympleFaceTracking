@@ -68,132 +68,59 @@ namespace CympleFaceTracking
             unifiedExpressions[(int)UnifiedExpressions.NoseSneerRight].Weight = _latestData.noseSneerRight;
             #endregion
             #region Cheek
-            if(_latestData.cheekSuckPuffLeft > 0)
-            {
-                unifiedExpressions[(int)UnifiedExpressions.CheekSuckLeft].Weight = 0;
-                unifiedExpressions[(int)UnifiedExpressions.CheekPuffLeft].Weight = _latestData.cheekSuckPuffLeft;
-            }
-            else
-            {
-                unifiedExpressions[(int)UnifiedExpressions.CheekSuckLeft].Weight = -_latestData.cheekSuckPuffLeft;
-                unifiedExpressions[(int)UnifiedExpressions.CheekPuffLeft].Weight = 0;
-            }
-            if (_latestData.cheekSuckPuffRight > 0)
-            {
-                unifiedExpressions[(int)UnifiedExpressions.CheekSuckRight].Weight = 0;
-                unifiedExpressions[(int)UnifiedExpressions.CheekPuffRight].Weight = _latestData.cheekSuckPuffRight;
-            }
-            else
-            {
-                unifiedExpressions[(int)UnifiedExpressions.CheekSuckRight].Weight = -_latestData.cheekSuckPuffRight;
-                unifiedExpressions[(int)UnifiedExpressions.CheekPuffRight].Weight = 0;
-            }
+            unifiedExpressions[(int)UnifiedExpressions.CheekPuffLeft].Weight = _latestData.cheekPuffLeft;
+            unifiedExpressions[(int)UnifiedExpressions.CheekPuffRight].Weight = _latestData.cheekPuffRight;
             #endregion
             #region Lip
-            if (_latestData.lipSuckFunnelUpperLeft > 0)
-            {
-                unifiedExpressions[(int)UnifiedExpressions.LipSuckUpperLeft].Weight = 0;
-                unifiedExpressions[(int)UnifiedExpressions.LipFunnelUpperLeft].Weight = _latestData.lipSuckFunnelUpperLeft;
-            }
-            else
-            {
-                unifiedExpressions[(int)UnifiedExpressions.LipSuckUpperLeft].Weight = -_latestData.lipSuckFunnelUpperLeft;
-                unifiedExpressions[(int)UnifiedExpressions.LipFunnelUpperLeft].Weight = 0;
-            }
-            if (_latestData.lipSuckFunnelUpperRight > 0)
-            {
-                unifiedExpressions[(int)UnifiedExpressions.LipSuckUpperRight].Weight = 0;
-                unifiedExpressions[(int)UnifiedExpressions.LipFunnelUpperRight].Weight = _latestData.lipSuckFunnelUpperRight;
-            }
-            else
-            {
-                unifiedExpressions[(int)UnifiedExpressions.LipSuckUpperRight].Weight = -_latestData.lipSuckFunnelUpperRight;
-                unifiedExpressions[(int)UnifiedExpressions.LipFunnelUpperRight].Weight = 0;
-            }
-            if (_latestData.lipSuckFunnelLowerLeft > 0)
-            {
-                unifiedExpressions[(int)UnifiedExpressions.LipSuckLowerLeft].Weight = 0;
-                unifiedExpressions[(int)UnifiedExpressions.LipFunnelLowerLeft].Weight = _latestData.lipSuckFunnelLowerLeft;
-            }
-            else
-            {
-                unifiedExpressions[(int)UnifiedExpressions.LipSuckLowerLeft].Weight = -_latestData.lipSuckFunnelLowerLeft;
-                unifiedExpressions[(int)UnifiedExpressions.LipFunnelLowerLeft].Weight = 0;
-            }
-            if (_latestData.lipSuckFunnelLowerRight > 0)
-            {
-                unifiedExpressions[(int)UnifiedExpressions.LipSuckLowerRight].Weight = 0;
-                unifiedExpressions[(int)UnifiedExpressions.LipFunnelLowerRight].Weight = _latestData.lipSuckFunnelLowerRight;
-            }
-            else
-            {
-                unifiedExpressions[(int)UnifiedExpressions.LipSuckLowerRight].Weight = -_latestData.lipSuckFunnelLowerRight;
-                unifiedExpressions[(int)UnifiedExpressions.LipFunnelLowerRight].Weight = 0;
-            }
 
-
-            unifiedExpressions[(int)UnifiedExpressions.MouthUpperLeft].Weight = _latestData.lipRaiseUpperLeft;
-            unifiedExpressions[(int)UnifiedExpressions.MouthUpperRight].Weight = _latestData.lipRaiseUpperRight;
-            unifiedExpressions[(int)UnifiedExpressions.MouthLowerLeft].Weight = _latestData.lipPressLowerLeft;
-            unifiedExpressions[(int)UnifiedExpressions.MouthLowerRight].Weight = _latestData.lipPressLowerRight;
-            if (_latestData.lipUpperShift > 0)
-            {
-                unifiedExpressions[(int)UnifiedExpressions.MouthUpperRight].Weight = _latestData.lipUpperShift;
-                unifiedExpressions[(int)UnifiedExpressions.MouthUpperLeft].Weight = 0;
-            }
-            else
-            {
-                unifiedExpressions[(int)UnifiedExpressions.MouthUpperRight].Weight = 0;
-                unifiedExpressions[(int)UnifiedExpressions.MouthUpperLeft].Weight = -_latestData.lipUpperShift;
-            }
-            if (_latestData.lipLowerShift > 0)
-            {
-                unifiedExpressions[(int)UnifiedExpressions.MouthLowerLeft].Weight = 0;
-                unifiedExpressions[(int)UnifiedExpressions.MouthLowerRight].Weight = _latestData.lipLowerShift;
-            }
-            else
-            {
-                unifiedExpressions[(int)UnifiedExpressions.MouthLowerLeft].Weight = -_latestData.lipLowerShift;
-                unifiedExpressions[(int)UnifiedExpressions.MouthLowerRight].Weight = 0;
-            }
-            unifiedExpressions[(int)UnifiedExpressions.MouthTightenerRight].Weight = _latestData.mouthTighttenerLeft;
-            unifiedExpressions[(int)UnifiedExpressions.MouthTightenerLeft].Weight = _latestData.mouthTighttenerRight;
+            unifiedExpressions[(int)UnifiedExpressions.LipSuckUpperLeft].Weight = unifiedExpressions[(int)UnifiedExpressions.LipSuckUpperRight].Weight = _latestData.MouthRoll_Up;
+            unifiedExpressions[(int)UnifiedExpressions.LipSuckLowerLeft].Weight = unifiedExpressions[(int)UnifiedExpressions.LipSuckLowerRight].Weight = _latestData.MouthRoll_Down;
+            unifiedExpressions[(int)UnifiedExpressions.MouthUpperLeft].Weight = _latestData.LipRaise_L;
+            unifiedExpressions[(int)UnifiedExpressions.MouthUpperRight].Weight = _latestData.LipRaise_R;
+            unifiedExpressions[(int)UnifiedExpressions.MouthLowerLeft].Weight = _latestData.LipDepress_L;
+            unifiedExpressions[(int)UnifiedExpressions.MouthLowerRight].Weight = _latestData.LipDepress_R;
+            unifiedExpressions[(int)UnifiedExpressions.LipFunnelUpperLeft].Weight = unifiedExpressions[(int)UnifiedExpressions.LipFunnelUpperRight].Weight = _latestData.MouthFunnel_Up;
+            unifiedExpressions[(int)UnifiedExpressions.LipFunnelLowerLeft].Weight = unifiedExpressions[(int)UnifiedExpressions.LipFunnelLowerRight].Weight = _latestData.MouthFunnel_Down;
+            unifiedExpressions[(int)UnifiedExpressions.LipPuckerUpperRight].Weight = unifiedExpressions[(int)UnifiedExpressions.LipPuckerUpperLeft].Weight = _latestData.MouthPucker;
+            unifiedExpressions[(int)UnifiedExpressions.LipPuckerLowerLeft].Weight = unifiedExpressions[(int)UnifiedExpressions.LipPuckerLowerRight].Weight = _latestData.MouthPucker;
             #endregion
             #region Mouth
-            unifiedExpressions[(int)UnifiedExpressions.JawOpen].Weight = _latestData.mouthY;
-            if (_latestData.mouthX > 0)
+            unifiedExpressions[(int)UnifiedExpressions.JawOpen].Weight = _latestData.jawOpen;
+            if (_latestData.jaw_Left_Right > 0)
             {
                 unifiedExpressions[(int)UnifiedExpressions.JawLeft].Weight = 0;
-                unifiedExpressions[(int)UnifiedExpressions.JawRight].Weight = _latestData.mouthX;
+                unifiedExpressions[(int)UnifiedExpressions.JawRight].Weight = _latestData.jaw_Left_Right;
             }
             else
             {
-                unifiedExpressions[(int)UnifiedExpressions.JawLeft].Weight = -_latestData.mouthX;
+                unifiedExpressions[(int)UnifiedExpressions.JawLeft].Weight = -_latestData.jaw_Left_Right;
                 unifiedExpressions[(int)UnifiedExpressions.JawRight].Weight = 0;
             }
-            unifiedExpressions[(int)UnifiedExpressions.MouthCornerPullLeft].Weight = _latestData.mouthCornerPullLeft;
-            unifiedExpressions[(int)UnifiedExpressions.MouthCornerPullRight].Weight = _latestData.mouthCornerPullRight;
+            unifiedExpressions[(int)UnifiedExpressions.MouthCornerPullLeft].Weight = _latestData.Smile_L;
+            unifiedExpressions[(int)UnifiedExpressions.MouthCornerPullRight].Weight = _latestData.Smile_R;
+            unifiedExpressions[(int)UnifiedExpressions.MouthStretchLeft].Weight = _latestData.Sad_L;
+            unifiedExpressions[(int)UnifiedExpressions.MouthStretchRight].Weight = _latestData.Sad_R;
             #endregion
             #region Tongue
-            unifiedExpressions[(int)UnifiedExpressions.TongueOut].Weight = _latestData.tongueInout;
+            unifiedExpressions[(int)UnifiedExpressions.TongueOut].Weight = _latestData.tongueOut;
             if (_latestData.tongueX > 0)
             {
                 unifiedExpressions[(int)UnifiedExpressions.TongueLeft].Weight = 0;
-                unifiedExpressions[(int)UnifiedExpressions.TongueRight].Weight = _latestData.mouthX;
+                unifiedExpressions[(int)UnifiedExpressions.TongueRight].Weight = _latestData.tongueX;
             }
             else
             {
-                unifiedExpressions[(int)UnifiedExpressions.TongueLeft].Weight = -_latestData.mouthX;
+                unifiedExpressions[(int)UnifiedExpressions.TongueLeft].Weight = -_latestData.tongueX;
                 unifiedExpressions[(int)UnifiedExpressions.TongueRight].Weight = 0;
             }
             if (_latestData.tongueY > 0)
             {
                 unifiedExpressions[(int)UnifiedExpressions.TongueDown].Weight = 0;
-                unifiedExpressions[(int)UnifiedExpressions.TongueUp].Weight = _latestData.mouthX;
+                unifiedExpressions[(int)UnifiedExpressions.TongueUp].Weight = _latestData.tongueY;
             }
             else
             {
-                unifiedExpressions[(int)UnifiedExpressions.TongueDown].Weight = -_latestData.mouthX;
+                unifiedExpressions[(int)UnifiedExpressions.TongueDown].Weight = -_latestData.tongueY;
                 unifiedExpressions[(int)UnifiedExpressions.TongueUp].Weight = 0;
             }
             #endregion
@@ -255,32 +182,35 @@ namespace CympleFaceTracking
                 Logger.LogError(e.ToString());
                 return false;
             }
-            if (values.Count() < 23)
+            if (values.Count() < 25)
             {
-                Logger.LogInformation("Too short");
+
+                Logger.LogInformation("Too short %d");
                 return false;
             }
             trackingData.noseSneerLeft = values["noseSneerLeft"];
             trackingData.noseSneerRight = values["noseSneerRight"];
-            trackingData.cheekSuckPuffLeft = values["cheekSuckPuffLeft"];
-            trackingData.cheekSuckPuffRight = values["cheekSuckPuffRight"];
-            trackingData.mouthX = values["mouthX"];
-            trackingData.mouthY = values["mouthY"];
-            trackingData.lipSuckFunnelUpperLeft = values["lipSuckFunnelUpperLeft"];
-            trackingData.lipSuckFunnelUpperRight = values["lipSuckFunnelUpperRight"];
-            trackingData.lipSuckFunnelLowerLeft = values["lipSuckFunnelLowerLeft"];
-            trackingData.lipSuckFunnelLowerRight = values["lipSuckFunnelLowerRight"];
-            trackingData.lipRaiseUpperLeft = values["lipRaiseUpperLeft"];
-            trackingData.lipRaiseUpperRight = values["lipRaiseUpperRight"];
-            trackingData.lipPressLowerLeft = values["lipPressLowerLeft"];
-            trackingData.lipPressLowerRight = values["lipPressLowerRight"];
-            trackingData.lipUpperShift = values["lipUpperShift"];
-            trackingData.lipLowerShift = values["lipLowerShift"];
-            trackingData.mouthCornerPullLeft = values["mouthCornerPullLeft"];
-            trackingData.mouthCornerPullRight = values["mouthCornerPullRight"];
-            trackingData.mouthTighttenerLeft = values["mouthTighttenerLeft"];
-            trackingData.mouthTighttenerRight = values["mouthTighttenerRight"];
-            trackingData.tongueInout = values["tongueInout"];
+            trackingData.cheekPuffLeft = values["cheekPuffLeft"];
+            trackingData.cheekPuffRight = values["cheekPuffRight"];
+            trackingData.jawOpen = values["jawOpen"];
+            trackingData.jaw_Left_Right = values["jaw_Left_Right"];
+            trackingData.jaw_Forward = values["jaw_Forward"];
+            trackingData.LipRaise_L = values["LipRaise_L"];
+            trackingData.LipRaise_R = values["LipRaise_R"];
+            trackingData.LipDepress_L = values["LipDepress_L"];
+            trackingData.LipDepress_R = values["LipDepress_R"];
+            trackingData.LipShift_Up = values["LipShift_Up"];
+            trackingData.LipShift_Down = values["LipShift_Down"];
+            trackingData.MouthRoll_Up = values["MouthRoll_Up"];
+            trackingData.MouthRoll_Down = values["MouthRoll_Down"];
+            trackingData.MouthFunnel_Up = values["MouthFunnel_Up"];
+            trackingData.MouthFunnel_Down = values["MouthFunnel_Down"];
+            trackingData.MouthPucker = values["MouthPucker"];
+            trackingData.Smile_L = values["Smile_L"];
+            trackingData.Smile_R = values["Smile_R"];
+            trackingData.Sad_L = values["Sad_L"];
+            trackingData.Sad_R = values["Sad_R"];
+            trackingData.tongueOut = values["tongueOut"];
             trackingData.tongueX = values["tongueX"];
             trackingData.tongueY = values["tongueY"];
             return true;

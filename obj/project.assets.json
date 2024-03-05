@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Administrator\\Desktop\\CympleFaceTracking\\CympleFaceTracking\\CympleFaceTracking.csproj",
+      "projectUniqueName": "E:\\Project_Cymple\\CympleFaceTracking\\CympleFaceTracking.csproj",
       "projectName": "CympleFaceTracking",
-      "projectPath": "C:\\Users\\Administrator\\Desktop\\CympleFaceTracking\\CympleFaceTracking\\CympleFaceTracking.csproj",
+      "projectPath": "E:\\Project_Cymple\\CympleFaceTracking\\CympleFaceTracking.csproj",
       "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Administrator\\Desktop\\CympleFaceTracking\\CympleFaceTracking\\obj\\",
+      "outputPath": "E:\\Project_Cymple\\CympleFaceTracking\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -45,6 +45,11 @@
         "warnAsError": [
           "NU1605"
         ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -66,7 +71,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.304\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.200\\RuntimeIdentifierGraph.json"
       }
     }
   }
