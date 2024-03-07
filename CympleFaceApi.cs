@@ -65,7 +65,7 @@ namespace CympleFaceTracking
             }
         }
         private void UpdateLowerFaceExpression(ref UnifiedExpressionShape[] unifiedExpressions, ref CympleFaceDataStructs _latestData) {
-            if((_latestData.flags & FLAG_MOUTH_E) != 0)
+            if ((_latestData.flags & FLAG_MOUTH_E) != 0)
             {
                 #region Nose
                 unifiedExpressions[(int)UnifiedExpressions.NoseSneerLeft].Weight = _latestData.noseSneerLeft;
@@ -223,10 +223,9 @@ namespace CympleFaceTracking
                 Logger.LogError(e.ToString());
                 return false;
             }
-            if (values.Count() < 44)
+            if (values.Count() < 33)
             {
-
-                Logger.LogInformation("Too short %d");
+                Logger.LogInformation("Too short: " + values.Count());
                 return false;
             }
             trackingData.flags = flags;
@@ -236,7 +235,6 @@ namespace CympleFaceTracking
             trackingData.cheekPuffRight = values["cheekPuffRight"];
             trackingData.jawOpen = values["jawOpen"];
             trackingData.jaw_Left_Right = values["jaw_Left_Right"];
-            trackingData.jaw_Forward = values["jaw_Forward"];
             trackingData.LipRaise_L = values["LipRaise_L"];
             trackingData.LipRaise_R = values["LipRaise_R"];
             trackingData.LipDepress_L = values["LipDepress_L"];

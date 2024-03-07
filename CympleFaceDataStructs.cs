@@ -11,9 +11,10 @@ namespace CympleFaceTracking
         public int flags;
         public float noseSneerLeft;
         public float noseSneerRight;
+        public float cheekPuffLeft;
+        public float cheekPuffRight;
         public float jawOpen;
         public float jaw_Left_Right;
-        public float jaw_Forward;
         public float LipRaise_L;
         public float LipRaise_R;
         public float LipDepress_L;
@@ -29,11 +30,9 @@ namespace CympleFaceTracking
         public float Smile_R;
         public float Sad_L;
         public float Sad_R;
+        public float tongueOut;
         public float tongueX;
         public float tongueY;
-        public float cheekPuffLeft;
-        public float cheekPuffRight;
-        public float tongueOut;
         public float eyePitch;
         public float eyeYaw_L;
         public float eyeYaw_R;
@@ -50,9 +49,10 @@ namespace CympleFaceTracking
         public static readonly string[] blendShapeNames = {
             "noseSneerLeft",
             "noseSneerRight",
+            "cheekPuffLeft",
+            "cheekPuffRight",
             "jawOpen",
             "jaw_Left_Right",
-            "jaw_Forward",
             "LipRaise_L",
             "LipRaise_R",
             "LipDepress_L",
@@ -68,21 +68,9 @@ namespace CympleFaceTracking
             "Smile_R",
             "Sad_L",
             "Sad_R",
+            "tongueOut",
             "tongueX",
             "tongueY",
-            "cheekPuffLeft",
-            "cheekPuffRight",
-            "tongueOut",
-            "eyeX", 
-            "eyeY",
-            "eyeLidLeft",
-            "eyeLidRight",
-            "eyeSquintLeft",
-            "eyeSquintRight",
-            "browLowererLeft",
-            "browLowererRight",
-            "browOuterUpLeft",
-            "browOuterUpRight",
             "eyePitch",
             "eyeYaw_L",
             "eyeYaw_R",
@@ -93,7 +81,7 @@ namespace CympleFaceTracking
             "browUpDownLeft",
             "browUpDownRight"
     };
-        public static int Port = 23304;
+        public static int Port = 22999;
     }
 }
 
