@@ -86,6 +86,26 @@ namespace CympleFaceTracking
                 unifiedExpressions[(int)UnifiedExpressions.LipFunnelLowerLeft].Weight = unifiedExpressions[(int)UnifiedExpressions.LipFunnelLowerRight].Weight = _latestData.MouthFunnel_Down;
                 unifiedExpressions[(int)UnifiedExpressions.LipPuckerUpperRight].Weight = unifiedExpressions[(int)UnifiedExpressions.LipPuckerUpperLeft].Weight = _latestData.MouthPucker;
                 unifiedExpressions[(int)UnifiedExpressions.LipPuckerLowerLeft].Weight = unifiedExpressions[(int)UnifiedExpressions.LipPuckerLowerRight].Weight = _latestData.MouthPucker;
+                if(_latestData.LipShift_Up > 0)
+                {
+                    unifiedExpressions[(int)UnifiedExpressions.MouthUpperLeft].Weight = 0;
+                    unifiedExpressions[(int)UnifiedExpressions.MouthUpperRight].Weight = _latestData.LipShift_Up;
+                }
+                else
+                {
+                    unifiedExpressions[(int)UnifiedExpressions.MouthUpperLeft].Weight = -_latestData.LipShift_Up;
+                    unifiedExpressions[(int)UnifiedExpressions.MouthUpperRight].Weight = 0;
+                }
+                if (_latestData.LipShift_Down > 0)
+                {
+                    unifiedExpressions[(int)UnifiedExpressions.MouthLowerLeft].Weight = 0;
+                    unifiedExpressions[(int)UnifiedExpressions.MouthLowerRight].Weight = _latestData.LipShift_Down;
+                }
+                else
+                {
+                    unifiedExpressions[(int)UnifiedExpressions.MouthLowerLeft].Weight = -_latestData.LipShift_Down;
+                    unifiedExpressions[(int)UnifiedExpressions.MouthLowerRight].Weight = 0;
+                }
                 #endregion
                 #region Mouth
                 unifiedExpressions[(int)UnifiedExpressions.JawOpen].Weight = _latestData.jawOpen;
@@ -252,6 +272,7 @@ namespace CympleFaceTracking
             trackingData.Sad_R = values["Sad_R"];
             trackingData.tongueOut = values["tongueOut"];
             trackingData.tongueX = values["tongueX"];
+            trackingData.tongueY = values["tongueY"];
             trackingData.eyePitch = values["eyePitch"];
             trackingData.eyeYaw_L = values["eyeYaw_L"];
             trackingData.eyeYaw_R = values["eyeYaw_R"];

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CympleFaceTracking")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9c684f0ba54ecf7b022766e95ac1a6e3957e9b9c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e17ea8b78d2ab919d6d06c3fb6f85cf5dac8a599")]
 [assembly: System.Reflection.AssemblyProductAttribute("CympleFaceTracking")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CympleFaceTracking")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
