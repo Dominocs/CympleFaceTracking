@@ -78,23 +78,23 @@ namespace CympleFaceTracking
                 #region Lip
                 unifiedExpressions[(int)UnifiedExpressions.LipSuckUpperLeft].Weight = unifiedExpressions[(int)UnifiedExpressions.LipSuckUpperRight].Weight = _latestData.MouthRoll_Up;
                 unifiedExpressions[(int)UnifiedExpressions.LipSuckLowerLeft].Weight = unifiedExpressions[(int)UnifiedExpressions.LipSuckLowerRight].Weight = _latestData.MouthRoll_Down;
-                unifiedExpressions[(int)UnifiedExpressions.MouthUpperLeft].Weight = _latestData.LipRaise_L;
-                unifiedExpressions[(int)UnifiedExpressions.MouthUpperRight].Weight = _latestData.LipRaise_R;
-                unifiedExpressions[(int)UnifiedExpressions.MouthLowerLeft].Weight = _latestData.LipDepress_L;
-                unifiedExpressions[(int)UnifiedExpressions.MouthLowerRight].Weight = _latestData.LipDepress_R;
+                unifiedExpressions[(int)UnifiedExpressions.MouthUpperUpLeft].Weight = _latestData.LipRaise_L;
+                unifiedExpressions[(int)UnifiedExpressions.MouthUpperUpRight].Weight = _latestData.LipRaise_R;
+                unifiedExpressions[(int)UnifiedExpressions.MouthUpperDeepenLeft].Weight = _latestData.LipDepress_L;
+                unifiedExpressions[(int)UnifiedExpressions.MouthUpperDeepenRight].Weight = _latestData.LipDepress_R;
                 unifiedExpressions[(int)UnifiedExpressions.LipFunnelUpperLeft].Weight = unifiedExpressions[(int)UnifiedExpressions.LipFunnelUpperRight].Weight = _latestData.MouthFunnel_Up;
                 unifiedExpressions[(int)UnifiedExpressions.LipFunnelLowerLeft].Weight = unifiedExpressions[(int)UnifiedExpressions.LipFunnelLowerRight].Weight = _latestData.MouthFunnel_Down;
                 unifiedExpressions[(int)UnifiedExpressions.LipPuckerUpperRight].Weight = unifiedExpressions[(int)UnifiedExpressions.LipPuckerUpperLeft].Weight = _latestData.MouthPucker;
                 unifiedExpressions[(int)UnifiedExpressions.LipPuckerLowerLeft].Weight = unifiedExpressions[(int)UnifiedExpressions.LipPuckerLowerRight].Weight = _latestData.MouthPucker;
                 if(_latestData.LipShift_Up > 0)
                 {
-                    unifiedExpressions[(int)UnifiedExpressions.MouthUpperLeft].Weight = 0;
+                    unifiedExpressions[(int)UnifiedExpressions.MouthUpperLeft].Weight = 0.0f;
                     unifiedExpressions[(int)UnifiedExpressions.MouthUpperRight].Weight = _latestData.LipShift_Up;
                 }
                 else
                 {
                     unifiedExpressions[(int)UnifiedExpressions.MouthUpperLeft].Weight = -_latestData.LipShift_Up;
-                    unifiedExpressions[(int)UnifiedExpressions.MouthUpperRight].Weight = 0;
+                    unifiedExpressions[(int)UnifiedExpressions.MouthUpperRight].Weight = 0.0f;
                 }
                 if (_latestData.LipShift_Down > 0)
                 {
@@ -136,20 +136,19 @@ namespace CympleFaceTracking
                     unifiedExpressions[(int)UnifiedExpressions.TongueLeft].Weight = -_latestData.tongueX;
                     unifiedExpressions[(int)UnifiedExpressions.TongueRight].Weight = 0;
                 }
-                if (_latestData.tongueY > 0)
+                if (_latestData.tongueY >= 0)
                 {
-                    unifiedExpressions[(int)UnifiedExpressions.TongueDown].Weight = 0;
                     unifiedExpressions[(int)UnifiedExpressions.TongueUp].Weight = _latestData.tongueY;
+                    unifiedExpressions[(int)UnifiedExpressions.TongueDown].Weight = 0.0f;
                 }
                 else
                 {
                     unifiedExpressions[(int)UnifiedExpressions.TongueDown].Weight = -_latestData.tongueY;
-                    unifiedExpressions[(int)UnifiedExpressions.TongueUp].Weight = 0;
+                    unifiedExpressions[(int)UnifiedExpressions.TongueUp].Weight = 0.0f;
                 }
             }
             if ((_latestData.flags & FLAG_EYE_E) != 0)
             {
-                unifiedExpressions[(int)UnifiedExpressions.TongueUp].Weight = 0;
                 UnifiedTracking.Data.Eye.Left.Gaze = new Vector2(_latestData.eyeYaw_L, _latestData.eyePitch);
                 UnifiedTracking.Data.Eye.Right.Gaze = new Vector2(_latestData.eyeYaw_R,  _latestData.eyePitch);
                 UnifiedTracking.Data.Eye.Left.Openness = 1.0f - _latestData.eyeLidCloseLeft;

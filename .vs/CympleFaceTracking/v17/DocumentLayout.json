@@ -17,7 +17,7 @@
       "VerticalTabListWidth": 256,
       "DocumentGroups": [
         {
-          "DockedWidth": 237,
+          "DockedWidth": 267,
           "SelectedChildIndex": 0,
           "Children": [
             {
@@ -28,7 +28,7 @@
               "RelativeDocumentMoniker": "CympleFaceApi.cs",
               "ToolTip": "E:\\Project_Cymple\\CympleFaceTracking\\CympleFaceApi.cs",
               "RelativeToolTip": "CympleFaceApi.cs",
-              "ViewState": "AQIAAIkAAAAAAAAAAAAuwJQAAAANAAAA",
+              "ViewState": "AQIAAHkAAAAAAAAAAAAvwJYAAAANAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-01-20T12:21:23.528Z",
               "EditorCaption": ""
@@ -36,7 +36,7 @@
           ]
         },
         {
-          "DockedWidth": 163,
+          "DockedWidth": 133,
           "SelectedChildIndex": 0,
           "Children": [
             {
@@ -47,7 +47,7 @@
               "RelativeDocumentMoniker": "CympleFaceDataStructs.cs",
               "ToolTip": "E:\\Project_Cymple\\CympleFaceTracking\\CympleFaceDataStructs.cs",
               "RelativeToolTip": "CympleFaceDataStructs.cs",
-              "ViewState": "AQIAABIAAAAAAAAAAAAAwBYAAAAiAAAA",
+              "ViewState": "AQIAABIAAAAAAAAAAAAAwCIAAAAcAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-01-20T12:21:22.881Z",
               "EditorCaption": ""
