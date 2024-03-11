@@ -150,8 +150,8 @@ namespace CympleFaceTracking
             if ((_latestData.flags & FLAG_EYE_E) != 0)
             {
                 unifiedExpressions[(int)UnifiedExpressions.TongueUp].Weight = 0;
-                UnifiedTracking.Data.Eye.Left.Gaze = new Vector2(_latestData.eyePitch, _latestData.eyeYaw_L);
-                UnifiedTracking.Data.Eye.Right.Gaze = new Vector2(_latestData.eyePitch, _latestData.eyeYaw_R);
+                UnifiedTracking.Data.Eye.Left.Gaze = new Vector2(_latestData.eyeYaw_L, _latestData.eyePitch);
+                UnifiedTracking.Data.Eye.Right.Gaze = new Vector2(_latestData.eyeYaw_R,  _latestData.eyePitch);
                 UnifiedTracking.Data.Eye.Left.Openness = 1.0f - _latestData.eyeLidCloseLeft;
                 UnifiedTracking.Data.Eye.Right.Openness = 1.0f - _latestData.eyeLidCloseRight;
                 unifiedExpressions[(int)UnifiedExpressions.EyeSquintLeft].Weight = _latestData.eyeSquintLeft;
