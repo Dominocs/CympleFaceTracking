@@ -155,7 +155,6 @@ namespace CympleFaceTracking
                 UnifiedTracking.Data.Eye._maxDilation = 10;
                 UnifiedTracking.Data.Eye.Left.PupilDiameter_MM = 5.0f + _latestData.Eye_Pupil_Left * 5.0f;
                 UnifiedTracking.Data.Eye.Right.PupilDiameter_MM = 5.0f + _latestData.Eye_Pupil_Right * 5.0f;
-                Logger.LogInformation("" + _latestData.Eye_Pupil_Right);
                 // Force the normalization values of Dilation to fit avg. pupil values.
                 unifiedExpressions[(int)UnifiedExpressions.EyeSquintLeft].Weight = _latestData.EyeSquintLeft;
                 unifiedExpressions[(int)UnifiedExpressions.EyeSquintRight].Weight = _latestData.EyeSquintRight;
