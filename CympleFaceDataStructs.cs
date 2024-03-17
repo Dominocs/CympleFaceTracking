@@ -8,13 +8,11 @@ namespace CympleFaceTracking
 {
     class CympleFaceDataStructs
     {
-        public int flags;
-        public float noseSneerLeft;
-        public float noseSneerRight;
-        public float cheekPuffLeft;
-        public float cheekPuffRight;
-        public float jawOpen;
-        public float jaw_Left_Right;
+        public int Flags;
+        public float CheekPuffLeft;
+        public float CheekPuffRight;
+        public float JawOpen;
+        public float Jaw_Left_Right;
         public float LipRaise_L;
         public float LipRaise_R;
         public float LipDepress_L;
@@ -30,29 +28,27 @@ namespace CympleFaceTracking
         public float Smile_R;
         public float Sad_L;
         public float Sad_R;
-        public float tongueOut;
-        public float tongueX;
-        public float tongueY;
-        public float eyePitch;
-        public float eyeYaw_L;
-        public float eyeYaw_R;
-        public float eyeLidCloseLeft;
-        public float eyeLidCloseRight;
-        public float eyeSquintLeft;
-        public float eyeSquintRight;
-        public float browUpDownLeft;
-        public float browUpDownRight;
+        public float TongueOut;
+        public float TongueX;
+        public float TongueY;
+        public float EyePitch;
+        public float EyeYaw_L;
+        public float EyeYaw_R;
+        public float Eye_Pupil_Left;
+        public float Eye_Pupil_Right;
+        public float EyeLidCloseLeft;
+        public float EyeLidCloseRight;
+        public float EyeSquintLeft;
+        public float EyeSquintRight;
     }
     public static class Constants
     {
         // The proper names of each cympleFace blendshape
         public static readonly string[] blendShapeNames = {
-            "noseSneerLeft",
-            "noseSneerRight",
-            "cheekPuffLeft",
-            "cheekPuffRight",
-            "jawOpen",
-            "jaw_Left_Right",
+            "CheekPuffLeft",
+            "CheekPuffRight",
+            "JawOpen",
+            "Jaw_Left_Right",
             "LipRaise_L",
             "LipRaise_R",
             "LipDepress_L",
@@ -68,18 +64,18 @@ namespace CympleFaceTracking
             "Smile_R",
             "Sad_L",
             "Sad_R",
-            "tongueOut",
-            "tongueX",
-            "tongueY",
-            "eyePitch",
-            "eyeYaw_L",
-            "eyeYaw_R",
-            "eyeLidCloseLeft",
-            "eyeLidCloseRight",
-            "eyeSquintLeft",
-            "eyeSquintRight",
-            "browUpDownLeft",
-            "browUpDownRight"
+            "TongueOut",
+            "TongueX",
+            "TongueY",
+            "EyePitch",
+            "EyeYaw_L",
+            "EyeYaw_R",
+            "Eye_Pupil_Left",
+            "Eye_Pupil_Right",
+            "EyeLidCloseLeft",
+            "EyeLidCloseRight",
+            "EyeSquintLeft",
+            "EyeSquintRight",
     };
         public static int Port = 22999;
     }

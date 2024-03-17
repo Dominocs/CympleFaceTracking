@@ -23,7 +23,7 @@ using System.Reflection;
 
 namespace CympleFaceTracking
 {
-    public class ExampleExtTrackingModule : ExtTrackingModule
+    public class CympleFaceTrackingModule : ExtTrackingModule
     {
         static int FLAG_MOUTH_E = 0x01;
         static int FLAG_EYE_E = 0x02;
@@ -57,23 +57,19 @@ namespace CympleFaceTracking
         // VRCFaceTracking will run this function in a separate thread;
         public override void Update()
         {
-            Thread.Sleep(10);
             // Get latest tracking data from interface and transform to VRCFaceTracking data.
             if (ReadData(_CympleFaceConnection, _CympleFaceRemoteEndpoint, ref _latestData))
             {
                 UpdateLowerFaceExpression(ref UnifiedTracking.Data.Shapes, ref _latestData);
             }
+            Thread.Sleep(10);
         }
         private void UpdateLowerFaceExpression(ref UnifiedExpressionShape[] unifiedExpressions, ref CympleFaceDataStructs _latestData) {
-            if ((_latestData.flags & FLAG_MOUTH_E) != 0)
+            if ((_latestData.Flags & FLAG_MOUTH_E) != 0)
             {
-                #region Nose
-                unifiedExpressions[(int)UnifiedExpressions.NoseSneerLeft].Weight = _latestData.noseSneerLeft;
-                unifiedExpressions[(int)UnifiedExpressions.NoseSneerRight].Weight = _latestData.noseSneerRight;
-                #endregion
                 #region Cheek
-                unifiedExpressions[(int)UnifiedExpressions.CheekPuffLeft].Weight = _latestData.cheekPuffLeft;
-                unifiedExpressions[(int)UnifiedExpressions.CheekPuffRight].Weight = _latestData.cheekPuffRight;
+                unifiedExpressions[(int)UnifiedExpressions.CheekPuffLeft].Weight = _latestData.CheekPuffLeft;
+                unifiedExpressions[(int)UnifiedExpressions.CheekPuffRight].Weight = _latestData.CheekPuffRight;
                 #endregion
                 #region Lip
                 unifiedExpressions[(int)UnifiedExpressions.LipSuckUpperLeft].Weight = unifiedExpressions[(int)UnifiedExpressions.LipSuckUpperRight].Weight = _latestData.MouthRoll_Up;
@@ -108,15 +104,15 @@ namespace CympleFaceTracking
                 }
                 #endregion
                 #region Mouth
-                unifiedExpressions[(int)UnifiedExpressions.JawOpen].Weight = _latestData.jawOpen;
-                if (_latestData.jaw_Left_Right > 0)
+                unifiedExpressions[(int)UnifiedExpressions.JawOpen].Weight = _latestData.JawOpen;
+                if (_latestData.Jaw_Left_Right > 0)
                 {
                     unifiedExpressions[(int)UnifiedExpressions.JawLeft].Weight = 0;
-                    unifiedExpressions[(int)UnifiedExpressions.JawRight].Weight = _latestData.jaw_Left_Right;
+                    unifiedExpressions[(int)UnifiedExpressions.JawRight].Weight = _latestData.Jaw_Left_Right;
                 }
                 else
                 {
-                    unifiedExpressions[(int)UnifiedExpressions.JawLeft].Weight = -_latestData.jaw_Left_Right;
+                    unifiedExpressions[(int)UnifiedExpressions.JawLeft].Weight = -_latestData.Jaw_Left_Right;
                     unifiedExpressions[(int)UnifiedExpressions.JawRight].Weight = 0;
                 }
                 unifiedExpressions[(int)UnifiedExpressions.MouthCornerPullLeft].Weight = _latestData.Smile_L;
@@ -125,60 +121,48 @@ namespace CympleFaceTracking
                 unifiedExpressions[(int)UnifiedExpressions.MouthStretchRight].Weight = _latestData.Sad_R;
                 #endregion
                 #region Tongue
-                unifiedExpressions[(int)UnifiedExpressions.TongueOut].Weight = _latestData.tongueOut;
-                if (_latestData.tongueX > 0)
+                unifiedExpressions[(int)UnifiedExpressions.TongueOut].Weight = _latestData.TongueOut;
+                if (_latestData.TongueX > 0)
                 {
                     unifiedExpressions[(int)UnifiedExpressions.TongueLeft].Weight = 0;
-                    unifiedExpressions[(int)UnifiedExpressions.TongueRight].Weight = _latestData.tongueX;
+                    unifiedExpressions[(int)UnifiedExpressions.TongueRight].Weight = _latestData.TongueX;
                 }
                 else
                 {
-                    unifiedExpressions[(int)UnifiedExpressions.TongueLeft].Weight = -_latestData.tongueX;
+                    unifiedExpressions[(int)UnifiedExpressions.TongueLeft].Weight = -_latestData.TongueX;
                     unifiedExpressions[(int)UnifiedExpressions.TongueRight].Weight = 0;
                 }
-                if (_latestData.tongueY >= 0)
+                if (_latestData.TongueY >= 0)
                 {
-                    unifiedExpressions[(int)UnifiedExpressions.TongueUp].Weight = _latestData.tongueY;
+                    unifiedExpressions[(int)UnifiedExpressions.TongueUp].Weight = _latestData.TongueY;
                     unifiedExpressions[(int)UnifiedExpressions.TongueDown].Weight = 0.0f;
                 }
                 else
                 {
-                    unifiedExpressions[(int)UnifiedExpressions.TongueDown].Weight = -_latestData.tongueY;
+                    unifiedExpressions[(int)UnifiedExpressions.TongueDown].Weight = -_latestData.TongueY;
                     unifiedExpressions[(int)UnifiedExpressions.TongueUp].Weight = 0.0f;
                 }
+                #endregion
             }
-            if ((_latestData.flags & FLAG_EYE_E) != 0)
+            if ((_latestData.Flags & FLAG_EYE_E) != 0)
             {
-                UnifiedTracking.Data.Eye.Left.Gaze = new Vector2(_latestData.eyeYaw_L, _latestData.eyePitch);
-                UnifiedTracking.Data.Eye.Right.Gaze = new Vector2(_latestData.eyeYaw_R,  _latestData.eyePitch);
-                UnifiedTracking.Data.Eye.Left.Openness = 1.0f - _latestData.eyeLidCloseLeft;
-                UnifiedTracking.Data.Eye.Right.Openness = 1.0f - _latestData.eyeLidCloseRight;
-                unifiedExpressions[(int)UnifiedExpressions.EyeSquintLeft].Weight = _latestData.eyeSquintLeft;
-                unifiedExpressions[(int)UnifiedExpressions.EyeSquintRight].Weight = _latestData.eyeSquintRight;
-
-                if (_latestData.browUpDownLeft > 0)
-                {
-                    unifiedExpressions[(int)UnifiedExpressions.BrowLowererLeft].Weight = 0;
-                    unifiedExpressions[(int)UnifiedExpressions.BrowOuterUpLeft].Weight = _latestData.browUpDownLeft;
-                }
-                else
-                {
-                    unifiedExpressions[(int)UnifiedExpressions.BrowLowererLeft].Weight = -_latestData.browUpDownLeft;
-                    unifiedExpressions[(int)UnifiedExpressions.BrowOuterUpLeft].Weight = 0;
-                }
-                if (_latestData.browUpDownRight > 0)
-                {
-                    unifiedExpressions[(int)UnifiedExpressions.BrowLowererRight].Weight = 0;
-                    unifiedExpressions[(int)UnifiedExpressions.BrowOuterUpRight].Weight = _latestData.browUpDownRight;
-                }
-                else
-                {
-                    unifiedExpressions[(int)UnifiedExpressions.BrowLowererRight].Weight = -_latestData.browUpDownRight;
-                    unifiedExpressions[(int)UnifiedExpressions.BrowOuterUpRight].Weight = 0;
-                }
+                #region Eye
+                UnifiedTracking.Data.Eye.Left.Gaze = new Vector2(_latestData.EyeYaw_L, _latestData.EyePitch);
+                UnifiedTracking.Data.Eye.Right.Gaze = new Vector2(_latestData.EyeYaw_R,  _latestData.EyePitch);
+                UnifiedTracking.Data.Eye.Left.Openness = 1.0f - _latestData.EyeLidCloseLeft;
+                UnifiedTracking.Data.Eye.Right.Openness = 1.0f - _latestData.EyeLidCloseRight;
+                UnifiedTracking.Data.Eye._minDilation = 0;
+                UnifiedTracking.Data.Eye._maxDilation = 10;
+                UnifiedTracking.Data.Eye.Left.PupilDiameter_MM = 5.0f + _latestData.Eye_Pupil_Left * 5.0f;
+                UnifiedTracking.Data.Eye.Right.PupilDiameter_MM = 5.0f + _latestData.Eye_Pupil_Right * 5.0f;
+                Logger.LogInformation("" + _latestData.Eye_Pupil_Right);
+                // Force the normalization values of Dilation to fit avg. pupil values.
+                unifiedExpressions[(int)UnifiedExpressions.EyeSquintLeft].Weight = _latestData.EyeSquintLeft;
+                unifiedExpressions[(int)UnifiedExpressions.EyeSquintRight].Weight = _latestData.EyeSquintRight;
+                #endregion
             }
-            
-            #endregion
+
+
         }
         // Read the data from the cympleFace UDP stream and place it into a cympleFaceTrackingDataStruct
         private bool ReadData(UdpClient cympleFaceConnection, IPEndPoint cympleFaceRemoteEndpoint, ref CympleFaceDataStructs trackingData)
@@ -242,18 +226,16 @@ namespace CympleFaceTracking
                 Logger.LogError(e.ToString());
                 return false;
             }
-            if (values.Count() < 33)
+            if (values.Count() < 31)
             {
                 Logger.LogInformation("Too short: " + values.Count());
                 return false;
             }
-            trackingData.flags = flags;
-            trackingData.noseSneerLeft = values["noseSneerLeft"];
-            trackingData.noseSneerRight = values["noseSneerRight"];
-            trackingData.cheekPuffLeft = values["cheekPuffLeft"];
-            trackingData.cheekPuffRight = values["cheekPuffRight"];
-            trackingData.jawOpen = values["jawOpen"];
-            trackingData.jaw_Left_Right = values["jaw_Left_Right"];
+            trackingData.Flags = flags;
+            trackingData.CheekPuffLeft = values["CheekPuffLeft"];
+            trackingData.CheekPuffRight = values["CheekPuffRight"];
+            trackingData.JawOpen = values["JawOpen"];
+            trackingData.Jaw_Left_Right = values["Jaw_Left_Right"];
             trackingData.LipRaise_L = values["LipRaise_L"];
             trackingData.LipRaise_R = values["LipRaise_R"];
             trackingData.LipDepress_L = values["LipDepress_L"];
@@ -269,18 +251,18 @@ namespace CympleFaceTracking
             trackingData.Smile_R = values["Smile_R"];
             trackingData.Sad_L = values["Sad_L"];
             trackingData.Sad_R = values["Sad_R"];
-            trackingData.tongueOut = values["tongueOut"];
-            trackingData.tongueX = values["tongueX"];
-            trackingData.tongueY = values["tongueY"];
-            trackingData.eyePitch = values["eyePitch"];
-            trackingData.eyeYaw_L = values["eyeYaw_L"];
-            trackingData.eyeYaw_R = values["eyeYaw_R"];
-            trackingData.eyeLidCloseLeft = values["eyeLidCloseLeft"];
-            trackingData.eyeLidCloseRight = values["eyeLidCloseRight"];
-            trackingData.eyeSquintLeft = values["eyeSquintLeft"];
-            trackingData.eyeSquintRight = values["eyeSquintRight"];
-            trackingData.browUpDownLeft = values["browUpDownLeft"];
-            trackingData.browUpDownRight = values["browUpDownRight"];
+            trackingData.TongueOut = values["TongueOut"];
+            trackingData.TongueX = values["TongueX"];
+            trackingData.TongueY = values["TongueY"];
+            trackingData.EyePitch = values["EyePitch"];
+            trackingData.EyeYaw_L = values["EyeYaw_L"];
+            trackingData.EyeYaw_R = values["EyeYaw_R"];
+            trackingData.Eye_Pupil_Left = values["Eye_Pupil_Left"];
+            trackingData.Eye_Pupil_Right = values["Eye_Pupil_Right"];
+            trackingData.EyeLidCloseLeft = values["EyeLidCloseLeft"];
+            trackingData.EyeLidCloseRight = values["EyeLidCloseRight"];
+            trackingData.EyeSquintLeft = values["EyeSquintLeft"];
+            trackingData.EyeSquintRight = values["EyeSquintRight"];
             return true;
         }
 
@@ -288,7 +270,7 @@ namespace CympleFaceTracking
         public override void Teardown()
         {
             // shut down the upd client
-            Logger.LogInformation("Closing LiveLink UDP client...");
+            Logger.LogInformation("Closing UDP client...");
             _CympleFaceConnection.Close();
             _CympleFaceConnection.Dispose();
         }
