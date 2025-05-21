@@ -31,7 +31,7 @@ namespace CympleFaceTracking
         private IPEndPoint _CympleFaceRemoteEndpoint;
         private CympleFaceDataStructs _latestData;
         private (bool, bool) trackingSupported = (false, false);
-   
+        private volatile bool _isExiting = false;
         private bool disconnectWarned = false;
         public override (bool SupportsEye, bool SupportsExpression) Supported => (true, true);
         // This is the first function ran by VRCFaceTracking. Make sure to completely initialize 
@@ -44,6 +44,8 @@ namespace CympleFaceTracking
 
             // UPD client stuff
             _CympleFaceConnection = new UdpClient(Constants.Port);
+            // 修改UDP客户端初始化
+            _CympleFaceConnection.Client.ReceiveTimeout = 1000; // 设置1秒超时
             // bind port
             _CympleFaceRemoteEndpoint = new IPEndPoint(IPAddress.Any, Constants.Port);
 
@@ -57,12 +59,15 @@ namespace CympleFaceTracking
         // VRCFaceTracking will run this function in a separate thread;
         public override void Update()
         {
-            // Get latest tracking data from interface and transform to VRCFaceTracking data.
-            if (ReadData(_CympleFaceConnection, _CympleFaceRemoteEndpoint, ref _latestData))
+            if (!_isExiting)
             {
-                UpdateLowerFaceExpression(ref UnifiedTracking.Data.Shapes, ref _latestData);
+                // Get latest tracking data from interface and transform to VRCFaceTracking data.
+                if (ReadData(_CympleFaceConnection, _CympleFaceRemoteEndpoint, ref _latestData))
+                {
+                    UpdateLowerFaceExpression(ref UnifiedTracking.Data.Shapes, ref _latestData);
+                }
+                Thread.Sleep(10);
             }
-            Thread.Sleep(10);
         }
         private void UpdateLowerFaceExpression(ref UnifiedExpressionShape[] unifiedExpressions, ref CympleFaceDataStructs _latestData) {
             if ((_latestData.Flags & FLAG_MOUTH_E) != 0)
@@ -270,8 +275,16 @@ namespace CympleFaceTracking
         {
             // shut down the upd client
             Logger.LogInformation("Closing UDP client...");
-            _CympleFaceConnection.Close();
-            _CympleFaceConnection.Dispose();
+            _isExiting = true;
+
+            // 先关闭socket中断阻塞接收
+            _CympleFaceConnection?.Close();
+
+            // 延迟确保线程退出
+            Thread.Sleep(200);
+
+            // 最后释放资源
+            _CympleFaceConnection?.Dispose();
         }
     }
 }
