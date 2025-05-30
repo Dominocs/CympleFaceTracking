@@ -13,7 +13,7 @@
       "VerticalTabListWidth": 256,
       "DocumentGroups": [
         {
-          "DockedWidth": 203,
+          "DockedWidth": 198,
           "SelectedChildIndex": 0,
           "Children": [
             {
@@ -24,9 +24,9 @@
               "RelativeDocumentMoniker": "CympleFaceApi.cs",
               "ToolTip": "E:\\Project_Cymple\\CympleFaceTracking\\CympleFaceApi.cs",
               "RelativeToolTip": "CympleFaceApi.cs",
-              "ViewState": "AgIAABsAAAAAAAAAAAAowK4AAAAQAAAAAAAAAA==",
+              "ViewState": "AgIAAFQAAAAAAAAAAAAAALMAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-21T13:53:33.179Z",
+              "WhenOpened": "2025-05-30T04:09:36.514Z",
               "EditorCaption": ""
             }
           ]

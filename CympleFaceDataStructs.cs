@@ -9,28 +9,6 @@ namespace CympleFaceTracking
     class CympleFaceDataStructs
     {
         public int Flags;
-        public float CheekPuffLeft;
-        public float CheekPuffRight;
-        public float JawOpen;
-        public float Jaw_Left_Right;
-        public float LipRaise_L;
-        public float LipRaise_R;
-        public float LipDepress_L;
-        public float LipDepress_R;
-        public float LipShift_Up;
-        public float LipShift_Down;
-        public float MouthRoll_Up;
-        public float MouthRoll_Down;
-        public float MouthFunnel_Up;
-        public float MouthFunnel_Down;
-        public float MouthPucker;
-        public float Smile_L;
-        public float Smile_R;
-        public float Sad_L;
-        public float Sad_R;
-        public float TongueOut;
-        public float TongueX;
-        public float TongueY;
         public float EyePitch;
         public float EyeYaw_L;
         public float EyeYaw_R;
@@ -40,33 +18,48 @@ namespace CympleFaceTracking
         public float EyeLidCloseRight;
         public float EyeSquintLeft;
         public float EyeSquintRight;
+        public float CheekPuffLeft;
+        public float CheekPuffRight;
+        public float CheekSuck;
+        public float Jaw_Left_Right;
+        public float JawOpen;
+        public float JawFwd;
+        public float MouthClose;
+        public float Mouth_Left_Right;
+        public float LipSuckUpper;
+        public float LipSuckLower;
+        public float MouthFunnel;
+        public float MouthPucker;
+        public float LipRaise_L;
+        public float LipRaise_R;
+        public float LipDepress_L;
+        public float LipDepress_R;
+        public float LipShift_Up;
+        public float LipShift_Down;
+        public float MouthRoll_Up;
+        public float MouthRoll_Down;
+        public float MouthShrugLower;
+        public float MouthSmileLeft;
+        public float MouthSmileRight;
+        public float MouthSadLeft;
+        public float MouthSadRight;
+        public float TongueOut;
+        public float Tongue_Left_Right;
+        public float Tongue_Up_Down;
+        public float TongueWide;
+        public float TongueRoll;
     }
     public static class Constants
     {
+        // Message types
+        public const int OSC_MSG_BLENDSHAPEDATA = 0;
+        public const int OSC_MSG_MAX = 1;
+        
+        // Message prefix
+        public const int MSG_PREFIX = unchecked((int)0xFFFFFFFD);
+        
         // The proper names of each cympleFace blendshape
         public static readonly string[] blendShapeNames = {
-            "CheekPuffLeft",
-            "CheekPuffRight",
-            "JawOpen",
-            "Jaw_Left_Right",
-            "LipRaise_L",
-            "LipRaise_R",
-            "LipDepress_L",
-            "LipDepress_R",
-            "LipShift_Up",
-            "LipShift_Down",
-            "MouthRoll_Up",
-            "MouthRoll_Down",
-            "MouthFunnel_Up",
-            "MouthFunnel_Down",
-            "MouthPucker",
-            "Smile_L",
-            "Smile_R",
-            "Sad_L",
-            "Sad_R",
-            "TongueOut",
-            "TongueX",
-            "TongueY",
             "EyePitch",
             "EyeYaw_L",
             "EyeYaw_R",
@@ -76,7 +69,38 @@ namespace CympleFaceTracking
             "EyeLidCloseRight",
             "EyeSquintLeft",
             "EyeSquintRight",
-    };
+            "CheekPuffLeft",
+            "CheekPuffRight",
+            "CheekSuck",
+            "Jaw_Left_Right",
+            "JawOpen",
+            "JawFwd",
+            "MouthClose",
+            "Mouth_Left_Right",
+            "LipSuckUpper",
+            "LipSuckLower",
+            "MouthFunnel",
+            "MouthPucker",
+            "LipRaise_L",
+            "LipRaise_R",
+            "LipDepress_L",
+            "LipDepress_R",
+            "LipShift_Up",
+            "LipShift_Down",
+            "MouthRoll_Up",
+            "MouthRoll_Down",
+            "MouthShrugLower",
+            "MouthSmileLeft",
+            "MouthSmileRight",
+            "MouthSadLeft",
+            "MouthSadRight",
+            "TongueOut",
+            "Tongue_Left_Right",
+            "Tongue_Up_Down",
+            "TongueWide",
+            "TongueRoll",
+        };
+        
         public static int Port = 22999;
     }
 }
