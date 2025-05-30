@@ -20,7 +20,6 @@ using System.Drawing.Drawing2D;
 using System.Reflection;
 
 
-
 namespace CympleFaceTracking
 {
     public class CympleFaceTrackingModule : ExtTrackingModule
@@ -33,6 +32,7 @@ namespace CympleFaceTracking
         private (bool, bool) trackingSupported = (false, false);
         private volatile bool _isExiting = false;
         private bool disconnectWarned = false;
+
         public override (bool SupportsEye, bool SupportsExpression) Supported => (true, true);
         // This is the first function ran by VRCFaceTracking. Make sure to completely initialize 
         // your tracking interface or the data to be accepted by VRCFaceTracking here. This will let 
@@ -59,183 +59,227 @@ namespace CympleFaceTracking
         // VRCFaceTracking will run this function in a separate thread;
         public override void Update()
         {
-            while (!_isExiting)
+            if (_isExiting) return;
+            
+            if (_CympleFaceConnection == null)
             {
-                try
-                {
-                    // 检查连接是否有效
-                    if (_CympleFaceConnection == null)
-                        break;
-                    
-                    // 获取最新数据
-                    if (ReadData(_CympleFaceConnection, _CympleFaceRemoteEndpoint, ref _latestData))
-                    {
-                        UpdateLowerFaceExpression(ref UnifiedTracking.Data.Shapes, ref _latestData);
-                    }
-                }
-                catch (ObjectDisposedException)
-                {
-                    // UDP客户端已被关闭，退出循环
-                    break;
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogError($"Error in Update: {ex.Message}");
-                }
-                
-                Thread.Sleep(10);
+                Logger.LogError("CympleFace connection is null");
+                return;
             }
-        }
-        private void UpdateLowerFaceExpression(ref UnifiedExpressionShape[] unifiedExpressions, ref CympleFaceDataStructs _latestData) {
-            if ((_latestData.Flags & FLAG_MOUTH_E) != 0)
+
+            // Read data from UDP
+            if (ReadData(_CympleFaceConnection, _CympleFaceRemoteEndpoint, ref _latestData))
             {
-                #region Cheek
-                unifiedExpressions[(int)UnifiedExpressions.CheekPuffLeft].Weight = _latestData.CheekPuffLeft;
-                unifiedExpressions[(int)UnifiedExpressions.CheekPuffRight].Weight = _latestData.CheekPuffRight;
-                unifiedExpressions[(int)UnifiedExpressions.CheekSuckLeft].Weight =  unifiedExpressions[(int)UnifiedExpressions.CheekSuckRight].Weight = _latestData.CheekSuck;
-                #endregion
-                
-                #region Lip
-                unifiedExpressions[(int)UnifiedExpressions.LipSuckUpperLeft].Weight = 
-                unifiedExpressions[(int)UnifiedExpressions.LipSuckUpperRight].Weight = _latestData.LipSuckUpper;
-                
-                unifiedExpressions[(int)UnifiedExpressions.LipSuckLowerLeft].Weight = 
-                unifiedExpressions[(int)UnifiedExpressions.LipSuckLowerRight].Weight = _latestData.LipSuckLower;
-                
-                unifiedExpressions[(int)UnifiedExpressions.MouthUpperUpLeft].Weight = _latestData.LipRaise_L;
-                unifiedExpressions[(int)UnifiedExpressions.MouthUpperUpRight].Weight = _latestData.LipRaise_R;
-                
-                unifiedExpressions[(int)UnifiedExpressions.MouthUpperDeepenLeft].Weight = _latestData.LipDepress_L;
-                unifiedExpressions[(int)UnifiedExpressions.MouthUpperDeepenRight].Weight = _latestData.LipDepress_R;
-                
-                unifiedExpressions[(int)UnifiedExpressions.LipFunnelUpperLeft].Weight = 
-                unifiedExpressions[(int)UnifiedExpressions.LipFunnelUpperRight].Weight = 
-                unifiedExpressions[(int)UnifiedExpressions.LipFunnelLowerLeft].Weight = 
-                unifiedExpressions[(int)UnifiedExpressions.LipFunnelLowerRight].Weight = _latestData.MouthFunnel;
-                
-                unifiedExpressions[(int)UnifiedExpressions.LipPuckerUpperRight].Weight = 
-                unifiedExpressions[(int)UnifiedExpressions.LipPuckerUpperLeft].Weight = 
-                unifiedExpressions[(int)UnifiedExpressions.LipPuckerLowerLeft].Weight = 
-                unifiedExpressions[(int)UnifiedExpressions.LipPuckerLowerRight].Weight = _latestData.MouthPucker;
-                
-                if(_latestData.LipShift_Up > 0)
-                {
-                    unifiedExpressions[(int)UnifiedExpressions.MouthUpperLeft].Weight = 0.0f;
-                    unifiedExpressions[(int)UnifiedExpressions.MouthUpperRight].Weight = _latestData.LipShift_Up;
-                }
-                else
-                {
-                    unifiedExpressions[(int)UnifiedExpressions.MouthUpperLeft].Weight = -_latestData.LipShift_Up;
-                    unifiedExpressions[(int)UnifiedExpressions.MouthUpperRight].Weight = 0.0f;
-                }
-                
-                if (_latestData.LipShift_Down > 0)
-                {
-                    unifiedExpressions[(int)UnifiedExpressions.MouthLowerLeft].Weight = 0;
-                    unifiedExpressions[(int)UnifiedExpressions.MouthLowerRight].Weight = _latestData.LipShift_Down;
-                }
-                else
-                {
-                    unifiedExpressions[(int)UnifiedExpressions.MouthLowerLeft].Weight = -_latestData.LipShift_Down;
-                    unifiedExpressions[(int)UnifiedExpressions.MouthLowerRight].Weight = 0;
-                }
-                
-                unifiedExpressions[(int)UnifiedExpressions.LipSuckUpperRight].Weight = unifiedExpressions[(int)UnifiedExpressions.LipSuckUpperLeft].Weight =_latestData.MouthRoll_Up;
-                unifiedExpressions[(int)UnifiedExpressions.LipSuckLowerRight].Weight = unifiedExpressions[(int)UnifiedExpressions.LipSuckLowerLeft].Weight = _latestData.MouthRoll_Down;
-                unifiedExpressions[(int)UnifiedExpressions.MouthRaiserLower].Weight = _latestData.MouthShrugLower;
-                #endregion
-                
-                #region Mouth
-                unifiedExpressions[(int)UnifiedExpressions.JawOpen].Weight = _latestData.JawOpen;
-                unifiedExpressions[(int)UnifiedExpressions.JawForward].Weight = _latestData.JawFwd;
-                
-                if (_latestData.Jaw_Left_Right > 0)
-                {
-                    unifiedExpressions[(int)UnifiedExpressions.JawLeft].Weight = 0;
-                    unifiedExpressions[(int)UnifiedExpressions.JawRight].Weight = _latestData.Jaw_Left_Right;
-                }
-                else
-                {
-                    unifiedExpressions[(int)UnifiedExpressions.JawLeft].Weight = -_latestData.Jaw_Left_Right;
-                    unifiedExpressions[(int)UnifiedExpressions.JawRight].Weight = 0;
-                }
-                
-                if (_latestData.Mouth_Left_Right > 0)
-                {
-                    unifiedExpressions[(int)UnifiedExpressions.MouthUpperLeft].Weight = unifiedExpressions[(int)UnifiedExpressions.MouthLowerLeft].Weight = 0;
-                    unifiedExpressions[(int)UnifiedExpressions.MouthUpperRight].Weight = unifiedExpressions[(int)UnifiedExpressions.MouthLowerRight].Weight = _latestData.Mouth_Left_Right;
-                }
-                else
-                {
-                    unifiedExpressions[(int)UnifiedExpressions.MouthUpperLeft].Weight = unifiedExpressions[(int)UnifiedExpressions.MouthLowerLeft].Weight = -_latestData.Mouth_Left_Right;
-                    unifiedExpressions[(int)UnifiedExpressions.MouthUpperRight].Weight = unifiedExpressions[(int)UnifiedExpressions.MouthLowerRight].Weight = 0;
-                }
-                
-                unifiedExpressions[(int)UnifiedExpressions.MouthClosed].Weight = _latestData.MouthClose;
-                unifiedExpressions[(int)UnifiedExpressions.MouthCornerPullLeft].Weight = _latestData.MouthSmileLeft;
-                unifiedExpressions[(int)UnifiedExpressions.MouthCornerPullRight].Weight = _latestData.MouthSmileRight;
-                unifiedExpressions[(int)UnifiedExpressions.MouthStretchLeft].Weight = _latestData.MouthSadLeft;
-                unifiedExpressions[(int)UnifiedExpressions.MouthStretchRight].Weight = _latestData.MouthSadRight;
-                #endregion
-                
-                #region Tongue
-                unifiedExpressions[(int)UnifiedExpressions.TongueOut].Weight = _latestData.TongueOut;
-                
-                if (_latestData.Tongue_Left_Right > 0)
-                {
-                    unifiedExpressions[(int)UnifiedExpressions.TongueLeft].Weight = 0;
-                    unifiedExpressions[(int)UnifiedExpressions.TongueRight].Weight = _latestData.Tongue_Left_Right;
-                }
-                else
-                {
-                    unifiedExpressions[(int)UnifiedExpressions.TongueLeft].Weight = -_latestData.Tongue_Left_Right;
-                    unifiedExpressions[(int)UnifiedExpressions.TongueRight].Weight = 0;
-                }
-                
-                if (_latestData.Tongue_Up_Down >= 0)
-                {
-                    unifiedExpressions[(int)UnifiedExpressions.TongueUp].Weight = _latestData.Tongue_Up_Down;
-                    unifiedExpressions[(int)UnifiedExpressions.TongueDown].Weight = 0.0f;
-                }
-                else
-                {
-                    unifiedExpressions[(int)UnifiedExpressions.TongueDown].Weight = -_latestData.Tongue_Up_Down;
-                    unifiedExpressions[(int)UnifiedExpressions.TongueUp].Weight = 0.0f;
-                }
-                
-                // Add new tongue parameters if supported by VRCFaceTracking
-                if (Enum.IsDefined(typeof(UnifiedExpressions), "TongueRoll"))
-                    unifiedExpressions[(int)UnifiedExpressions.TongueRoll].Weight = _latestData.TongueRoll;
-                    
-                if (Enum.IsDefined(typeof(UnifiedExpressions), "TongueWide"))
-                    unifiedExpressions[(int)UnifiedExpressions.TongueFlat].Weight = _latestData.TongueWide;
-                #endregion
+                // Update expressions with the latest data
+                UpdateExpressions();
             }
             
+            // Add a small sleep to prevent CPU hogging, similar to ETVRTrackingModule
+            Thread.Sleep(5);
+        }
+        private void UpdateExpressions()
+        {
+            // Update eye tracking data
             if ((_latestData.Flags & FLAG_EYE_E) != 0)
             {
-                #region Eye
-                UnifiedTracking.Data.Eye.Left.Gaze = new Vector2(_latestData.EyeYaw_L, _latestData.EyePitch);
-                UnifiedTracking.Data.Eye.Right.Gaze = new Vector2(_latestData.EyeYaw_R, _latestData.EyePitch);
-                UnifiedTracking.Data.Eye.Left.Openness = 1.0f - _latestData.EyeLidCloseLeft;
-                UnifiedTracking.Data.Eye.Right.Openness = 1.0f - _latestData.EyeLidCloseRight;
-                UnifiedTracking.Data.Eye._minDilation = 0;
-                UnifiedTracking.Data.Eye._maxDilation = 10;
-                UnifiedTracking.Data.Eye.Left.PupilDiameter_MM = 5.0f + _latestData.Eye_Pupil_Left * 5.0f;
-                UnifiedTracking.Data.Eye.Right.PupilDiameter_MM = 5.0f + _latestData.Eye_Pupil_Right * 5.0f;
-                // Force the normalization values of Dilation to fit avg. pupil values.
-                unifiedExpressions[(int)UnifiedExpressions.EyeSquintLeft].Weight = _latestData.EyeSquintLeft;
-                unifiedExpressions[(int)UnifiedExpressions.EyeSquintRight].Weight = _latestData.EyeSquintRight;
-                #endregion
+                UpdateEyeData();
             }
+            
+            // Update facial expressions
+            if ((_latestData.Flags & FLAG_MOUTH_E) != 0)
+            {
+                UpdateFacialExpressions();
+            }
+        }
+
+        private void UpdateEyeData()
+        {
+            UnifiedTracking.Data.Eye.Left.Gaze = new Vector2(_latestData.EyeYaw_L, _latestData.EyePitch);
+            UnifiedTracking.Data.Eye.Right.Gaze = new Vector2(_latestData.EyeYaw_R, _latestData.EyePitch);
+            
+            // Use raw eye openness values
+            UnifiedTracking.Data.Eye.Left.Openness = 1.0f - _latestData.EyeLidCloseLeft;
+            UnifiedTracking.Data.Eye.Right.Openness = 1.0f - _latestData.EyeLidCloseRight;
+            
+            // Pupil dilation - raw values
+            UnifiedTracking.Data.Eye._minDilation = 0;
+            UnifiedTracking.Data.Eye._maxDilation = 10;
+            UnifiedTracking.Data.Eye.Left.PupilDiameter_MM = 5.0f + _latestData.Eye_Pupil_Left * 5.0f;
+            UnifiedTracking.Data.Eye.Right.PupilDiameter_MM = 5.0f + _latestData.Eye_Pupil_Right * 5.0f;
+            
+            // Eye squint - raw values
+            UnifiedTracking.Data.Shapes[(int)UnifiedExpressions.EyeSquintLeft].Weight = _latestData.EyeSquintLeft;
+            UnifiedTracking.Data.Shapes[(int)UnifiedExpressions.EyeSquintRight].Weight = _latestData.EyeSquintRight;
+        }
+
+        private void UpdateFacialExpressions()
+        {
+            var shapes = UnifiedTracking.Data.Shapes;
+            
+            // Cheek region
+            UpdateCheekExpressions(ref shapes);
+            
+            // Lip region
+            UpdateLipExpressions(ref shapes);
+            
+            // Mouth region
+            UpdateMouthExpressions(ref shapes);
+            
+            // Tongue region
+            UpdateTongueExpressions(ref shapes);
+        }
+
+        private void UpdateCheekExpressions(ref UnifiedExpressionShape[] shapes)
+        {
+            shapes[(int)UnifiedExpressions.CheekPuffLeft].Weight = _latestData.CheekPuffLeft;
+            shapes[(int)UnifiedExpressions.CheekPuffRight].Weight = _latestData.CheekPuffRight;
+            shapes[(int)UnifiedExpressions.CheekSuckLeft].Weight = shapes[(int)UnifiedExpressions.CheekSuckRight].Weight = _latestData.CheekSuck;
+        }
+
+        private void UpdateLipExpressions(ref UnifiedExpressionShape[] shapes)
+        {
+            // Lip suck
+            shapes[(int)UnifiedExpressions.LipSuckUpperLeft].Weight = 
+            shapes[(int)UnifiedExpressions.LipSuckUpperRight].Weight = _latestData.LipSuckUpper;
+            
+            shapes[(int)UnifiedExpressions.LipSuckLowerLeft].Weight = 
+            shapes[(int)UnifiedExpressions.LipSuckLowerRight].Weight = _latestData.LipSuckLower;
+            
+            // Lip raise/depress
+            shapes[(int)UnifiedExpressions.MouthUpperUpLeft].Weight = _latestData.LipRaise_L;
+            shapes[(int)UnifiedExpressions.MouthUpperUpRight].Weight = _latestData.LipRaise_R;
+            
+            shapes[(int)UnifiedExpressions.MouthUpperDeepenLeft].Weight = _latestData.LipDepress_L;
+            shapes[(int)UnifiedExpressions.MouthUpperDeepenRight].Weight = _latestData.LipDepress_R;
+            
+            // Lip funnel/pucker
+            shapes[(int)UnifiedExpressions.LipFunnelUpperLeft].Weight = 
+            shapes[(int)UnifiedExpressions.LipFunnelUpperRight].Weight = 
+            shapes[(int)UnifiedExpressions.LipFunnelLowerLeft].Weight = 
+            shapes[(int)UnifiedExpressions.LipFunnelLowerRight].Weight = _latestData.MouthFunnel;
+            
+            shapes[(int)UnifiedExpressions.LipPuckerUpperRight].Weight = 
+            shapes[(int)UnifiedExpressions.LipPuckerUpperLeft].Weight = 
+            shapes[(int)UnifiedExpressions.LipPuckerLowerLeft].Weight = 
+            shapes[(int)UnifiedExpressions.LipPuckerLowerRight].Weight = _latestData.MouthPucker;
+            
+            // Lip shift
+            HandleLipShift(ref shapes);
+            
+            // Mouth roll
+            shapes[(int)UnifiedExpressions.LipSuckUpperLeft].Weight = 
+            shapes[(int)UnifiedExpressions.LipSuckUpperRight].Weight = _latestData.MouthRoll_Up;
+            shapes[(int)UnifiedExpressions.LipSuckLowerLeft].Weight = 
+            shapes[(int)UnifiedExpressions.LipSuckLowerRight].Weight = _latestData.MouthRoll_Down;
+            shapes[(int)UnifiedExpressions.MouthRaiserLower].Weight = _latestData.MouthShrugLower;
+        }
+
+        private void HandleLipShift(ref UnifiedExpressionShape[] shapes)
+        {
+            // Upper lip shift
+            if(_latestData.LipShift_Up > 0)
+            {
+                shapes[(int)UnifiedExpressions.MouthUpperLeft].Weight = 0.0f;
+                shapes[(int)UnifiedExpressions.MouthUpperRight].Weight = _latestData.LipShift_Up;
+            }
+            else
+            {
+                shapes[(int)UnifiedExpressions.MouthUpperLeft].Weight = -_latestData.LipShift_Up;
+                shapes[(int)UnifiedExpressions.MouthUpperRight].Weight = 0.0f;
+            }
+            
+            // Lower lip shift
+            if (_latestData.LipShift_Down > 0)
+            {
+                shapes[(int)UnifiedExpressions.MouthLowerLeft].Weight = 0;
+                shapes[(int)UnifiedExpressions.MouthLowerRight].Weight = _latestData.LipShift_Down;
+            }
+            else
+            {
+                shapes[(int)UnifiedExpressions.MouthLowerLeft].Weight = -_latestData.LipShift_Down;
+                shapes[(int)UnifiedExpressions.MouthLowerRight].Weight = 0;
+            }
+        }
+
+        private void UpdateMouthExpressions(ref UnifiedExpressionShape[] shapes)
+        {
+            // Jaw
+            shapes[(int)UnifiedExpressions.JawOpen].Weight = _latestData.JawOpen;
+            shapes[(int)UnifiedExpressions.JawForward].Weight = _latestData.JawFwd;
+            
+            // Jaw left/right
+            if (_latestData.Jaw_Left_Right > 0)
+            {
+                shapes[(int)UnifiedExpressions.JawLeft].Weight = 0;
+                shapes[(int)UnifiedExpressions.JawRight].Weight = _latestData.Jaw_Left_Right;
+            }
+            else
+            {
+                shapes[(int)UnifiedExpressions.JawLeft].Weight = -_latestData.Jaw_Left_Right;
+                shapes[(int)UnifiedExpressions.JawRight].Weight = 0;
+            }
+            
+            // Mouth left/right
+            if (_latestData.Mouth_Left_Right > 0)
+            {
+                shapes[(int)UnifiedExpressions.MouthUpperLeft].Weight = shapes[(int)UnifiedExpressions.MouthLowerLeft].Weight = 0;
+                shapes[(int)UnifiedExpressions.MouthUpperRight].Weight = shapes[(int)UnifiedExpressions.MouthLowerRight].Weight = _latestData.Mouth_Left_Right;
+            }
+            else
+            {
+                shapes[(int)UnifiedExpressions.MouthUpperLeft].Weight = shapes[(int)UnifiedExpressions.MouthLowerLeft].Weight = -_latestData.Mouth_Left_Right;
+                shapes[(int)UnifiedExpressions.MouthUpperRight].Weight = shapes[(int)UnifiedExpressions.MouthLowerRight].Weight = 0;
+            }
+            
+            // Other mouth expressions
+            shapes[(int)UnifiedExpressions.MouthClosed].Weight = _latestData.MouthClose;
+            shapes[(int)UnifiedExpressions.MouthCornerPullLeft].Weight = _latestData.MouthSmileLeft;
+            shapes[(int)UnifiedExpressions.MouthCornerPullRight].Weight = _latestData.MouthSmileRight;
+            shapes[(int)UnifiedExpressions.MouthStretchLeft].Weight = _latestData.MouthSadLeft;
+            shapes[(int)UnifiedExpressions.MouthStretchRight].Weight = _latestData.MouthSadRight;
+        }
+
+        private void UpdateTongueExpressions(ref UnifiedExpressionShape[] shapes)
+        {
+            shapes[(int)UnifiedExpressions.TongueOut].Weight = _latestData.TongueOut;
+            
+            // Tongue left/right
+            if (_latestData.Tongue_Left_Right > 0)
+            {
+                shapes[(int)UnifiedExpressions.TongueLeft].Weight = 0;
+                shapes[(int)UnifiedExpressions.TongueRight].Weight = _latestData.Tongue_Left_Right;
+            }
+            else
+            {
+                shapes[(int)UnifiedExpressions.TongueLeft].Weight = -_latestData.Tongue_Left_Right;
+                shapes[(int)UnifiedExpressions.TongueRight].Weight = 0;
+            }
+            
+            // Tongue up/down
+            if (_latestData.Tongue_Up_Down >= 0)
+            {
+                shapes[(int)UnifiedExpressions.TongueUp].Weight = _latestData.Tongue_Up_Down;
+                shapes[(int)UnifiedExpressions.TongueDown].Weight = 0.0f;
+            }
+            else
+            {
+                shapes[(int)UnifiedExpressions.TongueDown].Weight = -_latestData.Tongue_Up_Down;
+                shapes[(int)UnifiedExpressions.TongueUp].Weight = 0.0f;
+            }
+            
+            // Add new tongue parameters if supported by VRCFaceTracking
+            if (Enum.IsDefined(typeof(UnifiedExpressions), "TongueRoll"))
+                shapes[(int)UnifiedExpressions.TongueRoll].Weight = _latestData.TongueRoll;
+                
+            if (Enum.IsDefined(typeof(UnifiedExpressions), "TongueWide"))
+                shapes[(int)UnifiedExpressions.TongueFlat].Weight = _latestData.TongueWide;
         }
         // Read the data from the cympleFace UDP stream and place it into a cympleFaceTrackingDataStruct
         private bool ReadData(UdpClient cympleFaceConnection, IPEndPoint cympleFaceRemoteEndpoint, ref CympleFaceDataStructs trackingData)
         {
             try
             {
-                // Grab the packet
-                // will block but with a timeout set in the init function
+                // Grab the packet - will block but with a timeout set in the init function
                 Byte[] receiveBytes = cympleFaceConnection.Receive(ref cympleFaceRemoteEndpoint);
 
                 if (receiveBytes.Length < 12) // At least prefix, flags, type, length
@@ -243,7 +287,7 @@ namespace CympleFaceTracking
                     return false;
                 }
                 
-                // got a good message
+                // Connection status handling
                 if (disconnectWarned)
                 {
                     Logger.LogInformation("cympleFace connection reestablished");
@@ -266,40 +310,14 @@ namespace CympleFaceTracking
                 // Set flags
                 trackingData.Flags = flags;
                 
-                // Read all blendshape values
-                int offset = 12; // Start after header (prefix, flags, type, length)
-                for (int i = 0; i < Constants.blendShapeNames.Length; i++)
-                {
-                    if (offset + 4 <= receiveBytes.Length)
-                    {
-                        float value = BitConverter.ToSingle(receiveBytes, offset);
-                        SetBlendshapeValue(ref trackingData, i, value);
-                        offset += 4;
-                    }
-                    else
-                    {
-                        Logger.LogWarning($"Message too short: expected more data at offset {offset}");
-                        return false;
-                    }
-                }
+                // Use a more efficient approach to read all blendshape values
+                ReadBlendshapeValues(receiveBytes, ref trackingData);
                 
                 return true;
             }
             catch (SocketException se)
             {
-                if (se.SocketErrorCode == SocketError.TimedOut)
-                {
-                    if (!disconnectWarned)
-                    {
-                        Logger.LogWarning("cympleFace connection lost");
-                        disconnectWarned = true;
-                    }
-                }
-                else
-                {
-                    // some other network socket exception
-                    Logger.LogError(se.ToString());
-                }
+                HandleSocketException(se);
                 return false;
             }
             catch (Exception e)
@@ -310,10 +328,49 @@ namespace CympleFaceTracking
             }
         }
 
+        // Optimized method to read blendshape values
+        private void ReadBlendshapeValues(byte[] receiveBytes, ref CympleFaceDataStructs trackingData)
+        {
+            int offset = 12; // Start after header (prefix, flags, type, length)
+            int expectedLength = offset + (Constants.blendShapeNames.Length * 4);
+            
+            // Check if we have enough data for all blendshapes
+            if (receiveBytes.Length < expectedLength)
+            {
+                Logger.LogWarning($"Message too short: got {receiveBytes.Length} bytes, expected {expectedLength}");
+                return;
+            }
+            
+            // More efficient bulk reading
+            for (int i = 0; i < Constants.blendShapeNames.Length; i++)
+            {
+                float value = BitConverter.ToSingle(receiveBytes, offset);
+                SetBlendshapeValue(ref trackingData, i, value);
+                offset += 4;
+            }
+        }
+
+        // Handle socket exceptions separately for cleaner code
+        private void HandleSocketException(SocketException se)
+        {
+            if (se.SocketErrorCode == SocketError.TimedOut)
+            {
+                if (!disconnectWarned)
+                {
+                    Logger.LogWarning("cympleFace connection lost");
+                    disconnectWarned = true;
+                }
+            }
+            else
+            {
+                // some other network socket exception
+                Logger.LogError(se.ToString());
+            }
+        }
+
         // Helper method to set blendshape values by index
         private void SetBlendshapeValue(ref CympleFaceDataStructs data, int index, float value)
         {
-            string name = Constants.blendShapeNames[index];
             switch (index)
             {
                 case 0: data.EyePitch = value; break;
@@ -361,13 +418,13 @@ namespace CympleFaceTracking
         // Called when the module is unloaded or VRCFaceTracking itself tears down.
         public override void Teardown()
         {
-            // 先设置退出标志
+            // Set exit flag first
             Logger.LogInformation("Tearing down CympleFaceTracking module...");
             _isExiting = true;
             
             try
             {
-                // 关闭UDP客户端以中断任何阻塞的接收操作
+                // Close UDP client to interrupt any blocking receive operations
                 if (_CympleFaceConnection != null)
                 {
                     _CympleFaceConnection.Close();
