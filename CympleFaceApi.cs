@@ -33,6 +33,8 @@ namespace CympleFaceTracking
         private volatile bool _isExiting = false;
         private bool disconnectWarned = false;
 
+        private (bool, bool) validateModule = (false, false);
+
         public override (bool SupportsEye, bool SupportsExpression) Supported => (true, true);
         // This is the first function ran by VRCFaceTracking. Make sure to completely initialize 
         // your tracking interface or the data to be accepted by VRCFaceTracking here. This will let 
@@ -82,12 +84,22 @@ namespace CympleFaceTracking
             // Update eye tracking data
             if ((_latestData.Flags & FLAG_EYE_E) != 0)
             {
+                if (false == validateModule.Item1)
+                {
+                    validateModule.Item1 = true;
+                    Logger.LogInformation("eye tracking activated");
+                }
                 UpdateEyeData();
             }
             
             // Update facial expressions
             if ((_latestData.Flags & FLAG_MOUTH_E) != 0)
             {
+                if (false == validateModule.Item2)
+                {
+                    validateModule.Item2 = true;
+                    Logger.LogInformation("facial expression tracking activated");
+                }
                 UpdateFacialExpressions();
             }
         }
@@ -296,7 +308,12 @@ namespace CympleFaceTracking
 
                 // Read header fields with new format
                 int prefix = BitConverter.ToInt32(receiveBytes, 0);
-                int flags = BitConverter.ToInt32(receiveBytes, 4);
+                uint flags = BitConverter.ToUInt32(receiveBytes, 4);
+                // Convert endianness if needed (assuming network byte order is big-endian)
+                if (BitConverter.IsLittleEndian)
+                {
+                    flags = (uint)((flags & 0xFF) << 24 | (flags & 0xFF00) << 8 | (flags & 0xFF0000) >> 8 | (flags & 0xFF000000) >> 24);
+                }
                 ushort type = BitConverter.ToUInt16(receiveBytes, 8);
                 short length = BitConverter.ToInt16(receiveBytes, 10);
                 
@@ -359,6 +376,7 @@ namespace CympleFaceTracking
                 {
                     Logger.LogWarning("cympleFace connection lost");
                     disconnectWarned = true;
+                    validateModule = (false, false);
                 }
             }
             else

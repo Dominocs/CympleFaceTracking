@@ -8,7 +8,7 @@ namespace CympleFaceTracking
 {
     class CympleFaceDataStructs
     {
-        public int Flags;
+        public uint Flags;
         public float EyePitch;
         public float EyeYaw_L;
         public float EyeYaw_R;
