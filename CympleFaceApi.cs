@@ -6,7 +6,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.IO;
 using System.Runtime.InteropServices;
-
+using System.Text;
 using System.Diagnostics;
 
 using VRCFaceTracking;
@@ -34,15 +34,33 @@ namespace CympleFaceTracking
         private bool disconnectWarned = false;
 
         private (bool, bool) validateModule = (false, false);
+        
 
         public override (bool SupportsEye, bool SupportsExpression) Supported => (true, true);
         // This is the first function ran by VRCFaceTracking. Make sure to completely initialize 
         // your tracking interface or the data to be accepted by VRCFaceTracking here. This will let 
         // VRCFaceTracking know what data is available to be sent from your tracking interface at initialization.
+        [DllImport("kernel32", CharSet = CharSet.Unicode)]
+        private static extern int GetPrivateProfileString(
+        string section, string key, string defaultValue,
+        StringBuilder result, int size, string filePath);
+        public bool GetBoolValue(string filePath, string section, string key, bool defaultValue = false)
+        {
+            const int bufferSize = 255;
+            var result = new StringBuilder(bufferSize);
+            GetPrivateProfileString(section, key, "", result, bufferSize, filePath);
+
+            string value = result.ToString().ToLower();
+            // 支持"true"/"1"为真，"false"/"0"为假
+            return value == "1" || value == "true";
+        }
+
         public override (bool eyeSuccess, bool expressionSuccess) Initialize(bool eyeAvailable, bool expressionAvailable)
         {
             ModuleInformation.Name = "CympleFaceTracking";
-            Logger.LogInformation("Initializing CympleFaceTracking module");
+            System.Reflection.Assembly a = System.Reflection.Assembly.GetExecutingAssembly();
+            var img = a.GetManifestResourceStream("CympleFaceTracking.Assets.logo.png");
+            Logger.LogInformation("Initializing CympleFaceTracking module version: 1.0.0");
 
             // UPD client stuff
             _CympleFaceConnection = new UdpClient(Constants.Port);
@@ -53,8 +71,32 @@ namespace CympleFaceTracking
 
             _latestData = new CympleFaceDataStructs();
 
-            trackingSupported = (true, true);
-            return trackingSupported;
+            string iniDir = @"C:\Cymple\iniFile.ini";
+            bool eyeEnabled = false;
+            bool lipEnabled = false;
+            if (!File.Exists(iniDir))
+            {
+                Logger.LogError("Cymple face INI file not found");
+            }
+            else{
+                eyeEnabled = GetBoolValue(iniDir, "Function Switch", "cymple_eye_sw");
+                lipEnabled = GetBoolValue(iniDir, "Function Switch", "cymple_mouth_sw");
+            }
+            Logger.LogInformation($"CympleFace module eye: {eyeEnabled} mouth: {lipEnabled}");
+            trackingSupported = (eyeEnabled, lipEnabled);
+
+            if (img != null)
+            {
+                List<Stream> streams = new List<Stream>();
+                streams.Add(img);
+                ModuleInformation.StaticImages = streams;
+            }
+            else
+            {
+                Logger.LogError("Could not find logo.");
+            }
+
+                return trackingSupported;
         }
 
         // Polls data from the tracking interface.

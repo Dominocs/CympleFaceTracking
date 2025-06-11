@@ -3,12 +3,16 @@
   "WorkspaceRootPath": "E:\\Project_Cymple\\CympleFaceTracking\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{2BA0D686-73A2-444D-A163-8B26A291CAB7}|CympleFaceTracking.csproj|e:\\project_cymple\\cymplefacetracking\\cymplefaceapi.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2BA0D686-73A2-444D-A163-8B26A291CAB7}|CympleFaceTracking.csproj|solutionrelative:cymplefaceapi.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{2BA0D686-73A2-444D-A163-8B26A291CAB7}|CympleFaceTracking.csproj|e:\\project_cymple\\cymplefacetracking\\cymplefacedatastructs.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{2BA0D686-73A2-444D-A163-8B26A291CAB7}|CympleFaceTracking.csproj|solutionrelative:cymplefacedatastructs.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{2BA0D686-73A2-444D-A163-8B26A291CAB7}|CympleFaceTracking.csproj|e:\\project_cymple\\cymplefacetracking\\cymplefaceapi.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2BA0D686-73A2-444D-A163-8B26A291CAB7}|CympleFaceTracking.csproj|solutionrelative:cymplefaceapi.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{2BA0D686-73A2-444D-A163-8B26A291CAB7}|CympleFaceTracking.csproj|e:\\project_cymple\\cymplefacetracking\\cymplefacetracking.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{2BA0D686-73A2-444D-A163-8B26A291CAB7}|CympleFaceTracking.csproj|solutionrelative:cymplefacetracking.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,32 +22,46 @@
       "DocumentGroups": [
         {
           "DockedWidth": 198,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
+              "Title": "CympleFaceTracking.csproj",
+              "DocumentMoniker": "E:\\Project_Cymple\\CympleFaceTracking\\CympleFaceTracking.csproj",
+              "RelativeDocumentMoniker": "CympleFaceTracking.csproj",
+              "ToolTip": "E:\\Project_Cymple\\CympleFaceTracking\\CympleFaceTracking.csproj",
+              "RelativeToolTip": "CympleFaceTracking.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAADwvwIAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-06-11T18:32:22.611Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "CympleFaceDataStructs.cs",
               "DocumentMoniker": "E:\\Project_Cymple\\CympleFaceTracking\\CympleFaceDataStructs.cs",
               "RelativeDocumentMoniker": "CympleFaceDataStructs.cs",
               "ToolTip": "E:\\Project_Cymple\\CympleFaceTracking\\CympleFaceDataStructs.cs",
               "RelativeToolTip": "CympleFaceDataStructs.cs",
-              "ViewState": "AgIAAEEAAAAAAAAAAADwv1YAAAAbAAAAAAAAAA==",
+              "ViewState": "AgIAABsAAAAAAAAAAAAAADcAAAAkAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-30T08:20:22.697Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "CympleFaceApi.cs",
               "DocumentMoniker": "E:\\Project_Cymple\\CympleFaceTracking\\CympleFaceApi.cs",
               "RelativeDocumentMoniker": "CympleFaceApi.cs",
               "ToolTip": "E:\\Project_Cymple\\CympleFaceTracking\\CympleFaceApi.cs",
               "RelativeToolTip": "CympleFaceApi.cs",
-              "ViewState": "AgIAAD8AAAAAAAAAAAAtwFIAAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAC8AAAAAAAAAAAAQwD4AAABbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-30T04:09:36.514Z"
+              "WhenOpened": "2025-05-30T04:09:36.514Z",
+              "EditorCaption": ""
             }
           ]
         }

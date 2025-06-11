@@ -17,3 +17,4 @@ E:\Project_Cymple\CympleFaceTracking\obj\Release\net7.0\CympleFaceTracking.dll
 E:\Project_Cymple\CympleFaceTracking\obj\Release\net7.0\refint\CympleFaceTracking.dll
 E:\Project_Cymple\CympleFaceTracking\obj\Release\net7.0\CympleFaceTracking.pdb
 E:\Project_Cymple\CympleFaceTracking\obj\Release\net7.0\ref\CympleFaceTracking.dll
+E:\Project_Cymple\CympleFaceTracking\bin\Release\net7.0\Assets\logo.png
