@@ -32,7 +32,7 @@ namespace CympleFaceTracking
         private (bool, bool) trackingSupported = (false, false);
         private volatile bool _isExiting = false;
         private bool disconnectWarned = false;
-
+        private Thread _thread;
         private (bool, bool) validateModule = (false, false);
         
 
@@ -95,10 +95,21 @@ namespace CympleFaceTracking
             {
                 Logger.LogError("Could not find logo.");
             }
-
-                return trackingSupported;
+            _thread = new Thread(readLoop);
+            _thread.Start();
+            return trackingSupported;
         }
-
+        private void readLoop()
+        {
+            Logger.LogInformation("CympleFace readLoop start.");
+            while (!_isExiting)
+            {
+                // Read data from UDP
+                ReadData(_CympleFaceConnection, _CympleFaceRemoteEndpoint, ref _latestData);
+                Thread.Sleep(1);
+            }
+            Logger.LogInformation("CympleFace readLoop end.");
+        }
         // Polls data from the tracking interface.
         // VRCFaceTracking will run this function in a separate thread;
         public override void Update()
@@ -111,12 +122,8 @@ namespace CympleFaceTracking
                 return;
             }
 
-            // Read data from UDP
-            if (ReadData(_CympleFaceConnection, _CympleFaceRemoteEndpoint, ref _latestData))
-            {
-                // Update expressions with the latest data
-                UpdateExpressions();
-            }
+            // Update expressions with the latest data
+            UpdateExpressions();
             
             // Add a small sleep to prevent CPU hogging, similar to ETVRTrackingModule
             Thread.Sleep(5);
@@ -496,7 +503,7 @@ namespace CympleFaceTracking
             {
                 Logger.LogError($"Error during teardown: {ex.Message}");
             }
-            
+            _thread.Join();
             Logger.LogInformation("CympleFaceTracking module teardown complete");
         }
     }
