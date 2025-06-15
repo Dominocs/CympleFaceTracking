@@ -60,7 +60,7 @@ namespace CympleFaceTracking
             ModuleInformation.Name = "CympleFaceTracking";
             System.Reflection.Assembly a = System.Reflection.Assembly.GetExecutingAssembly();
             var img = a.GetManifestResourceStream("CympleFaceTracking.Assets.logo.png");
-            Logger.LogInformation("Initializing CympleFaceTracking module version: 1.0.0");
+            Logger.LogInformation("Initializing CympleFaceTracking module.");
 
             // UPD client stuff
             _CympleFaceConnection = new UdpClient(Constants.Port);
@@ -84,7 +84,7 @@ namespace CympleFaceTracking
             }
             Logger.LogInformation($"CympleFace module eye: {eyeEnabled} mouth: {lipEnabled}");
             trackingSupported = (eyeEnabled, lipEnabled);
-
+            ModuleInformation.Name = "Cymple Facial Tracking V1.2.2";
             if (img != null)
             {
                 List<Stream> streams = new List<Stream>();
@@ -95,18 +95,66 @@ namespace CympleFaceTracking
             {
                 Logger.LogError("Could not find logo.");
             }
-            _thread = new Thread(readLoop);
+            _thread = new Thread(ReadLoop);
             _thread.Start();
             return trackingSupported;
         }
-        private void readLoop()
+        private void ReadLoop()
         {
             Logger.LogInformation("CympleFace readLoop start.");
             while (!_isExiting)
             {
                 // Read data from UDP
-                ReadData(_CympleFaceConnection, _CympleFaceRemoteEndpoint, ref _latestData);
-                Thread.Sleep(1);
+                try
+                {
+                    // Grab the packet - will block but with a timeout set in the init function
+                    Byte[] receiveBytes = _CympleFaceConnection.Receive(ref _CympleFaceRemoteEndpoint);
+
+                    if (receiveBytes.Length < 12) // At least prefix, flags, type, length
+                    {
+                        continue;
+                    }
+
+                    // Connection status handling
+                    if (disconnectWarned)
+                    {
+                        Logger.LogInformation("cympleFace connection reestablished");
+                        disconnectWarned = false;
+                    }
+
+                    // Read header fields with new format
+                    int prefix = BitConverter.ToInt32(receiveBytes, 0);
+                    uint flags = BitConverter.ToUInt32(receiveBytes, 4);
+                    // Convert endianness if needed (assuming network byte order is big-endian)
+                    if (BitConverter.IsLittleEndian)
+                    {
+                        flags = (uint)((flags & 0xFF) << 24 | (flags & 0xFF00) << 8 | (flags & 0xFF0000) >> 8 | (flags & 0xFF000000) >> 24);
+                    }
+                    ushort type = BitConverter.ToUInt16(receiveBytes, 8);
+                    short length = BitConverter.ToInt16(receiveBytes, 10);
+
+                    // Verify message prefix and type
+                    if (prefix != Constants.MSG_PREFIX || type != Constants.OSC_MSG_BLENDSHAPEDATA)
+                    {
+                        Logger.LogWarning($"Invalid message: prefix={prefix:X}, type={type}");
+                        continue;
+                    }
+
+                    // Set flags
+                    _latestData.Flags = flags;
+
+                    // Use a more efficient approach to read all blendshape values
+                    ReadBlendshapeValues(receiveBytes, ref _latestData);
+                }
+                catch (SocketException se)
+                {
+                    HandleSocketException(se);
+                }
+                catch (Exception e)
+                {
+                    // some other exception
+                    Logger.LogError(e.ToString());
+                }
             }
             Logger.LogInformation("CympleFace readLoop end.");
         }
@@ -138,7 +186,10 @@ namespace CympleFaceTracking
                     validateModule.Item1 = true;
                     Logger.LogInformation("eye tracking activated");
                 }
-                UpdateEyeData();
+                else
+                {
+                    UpdateEyeData();
+                }
             }
             
             // Update facial expressions
@@ -149,7 +200,10 @@ namespace CympleFaceTracking
                     validateModule.Item2 = true;
                     Logger.LogInformation("facial expression tracking activated");
                 }
-                UpdateFacialExpressions();
+                else
+                {
+                    UpdateFacialExpressions();
+                }
             }
         }
 
@@ -295,9 +349,11 @@ namespace CympleFaceTracking
             // Other mouth expressions
             shapes[(int)UnifiedExpressions.MouthClosed].Weight = _latestData.MouthClose;
             shapes[(int)UnifiedExpressions.MouthCornerPullLeft].Weight = _latestData.MouthSmileLeft;
+            shapes[(int)UnifiedExpressions.MouthCornerSlantLeft].Weight = _latestData.MouthSmileLeft;
             shapes[(int)UnifiedExpressions.MouthCornerPullRight].Weight = _latestData.MouthSmileRight;
-            shapes[(int)UnifiedExpressions.MouthStretchLeft].Weight = _latestData.MouthSadLeft;
-            shapes[(int)UnifiedExpressions.MouthStretchRight].Weight = _latestData.MouthSadRight;
+            shapes[(int)UnifiedExpressions.MouthCornerSlantRight].Weight = _latestData.MouthSmileRight;
+            shapes[(int)UnifiedExpressions.MouthFrownLeft].Weight = _latestData.MouthSadLeft;
+            shapes[(int)UnifiedExpressions.MouthFrownRight].Weight = _latestData.MouthSadRight;
         }
 
         private void UpdateTongueExpressions(ref UnifiedExpressionShape[] shapes)
@@ -334,64 +390,6 @@ namespace CympleFaceTracking
                 
             if (Enum.IsDefined(typeof(UnifiedExpressions), "TongueWide"))
                 shapes[(int)UnifiedExpressions.TongueFlat].Weight = _latestData.TongueWide;
-        }
-        // Read the data from the cympleFace UDP stream and place it into a cympleFaceTrackingDataStruct
-        private bool ReadData(UdpClient cympleFaceConnection, IPEndPoint cympleFaceRemoteEndpoint, ref CympleFaceDataStructs trackingData)
-        {
-            try
-            {
-                // Grab the packet - will block but with a timeout set in the init function
-                Byte[] receiveBytes = cympleFaceConnection.Receive(ref cympleFaceRemoteEndpoint);
-
-                if (receiveBytes.Length < 12) // At least prefix, flags, type, length
-                {
-                    return false;
-                }
-                
-                // Connection status handling
-                if (disconnectWarned)
-                {
-                    Logger.LogInformation("cympleFace connection reestablished");
-                    disconnectWarned = false;
-                }
-
-                // Read header fields with new format
-                int prefix = BitConverter.ToInt32(receiveBytes, 0);
-                uint flags = BitConverter.ToUInt32(receiveBytes, 4);
-                // Convert endianness if needed (assuming network byte order is big-endian)
-                if (BitConverter.IsLittleEndian)
-                {
-                    flags = (uint)((flags & 0xFF) << 24 | (flags & 0xFF00) << 8 | (flags & 0xFF0000) >> 8 | (flags & 0xFF000000) >> 24);
-                }
-                ushort type = BitConverter.ToUInt16(receiveBytes, 8);
-                short length = BitConverter.ToInt16(receiveBytes, 10);
-                
-                // Verify message prefix and type
-                if (prefix != Constants.MSG_PREFIX || type != Constants.OSC_MSG_BLENDSHAPEDATA)
-                {
-                    Logger.LogWarning($"Invalid message: prefix={prefix:X}, type={type}");
-                    return false;
-                }
-                
-                // Set flags
-                trackingData.Flags = flags;
-                
-                // Use a more efficient approach to read all blendshape values
-                ReadBlendshapeValues(receiveBytes, ref trackingData);
-                
-                return true;
-            }
-            catch (SocketException se)
-            {
-                HandleSocketException(se);
-                return false;
-            }
-            catch (Exception e)
-            {
-                // some other exception
-                Logger.LogError(e.ToString());
-                return false;
-            }
         }
 
         // Optimized method to read blendshape values
