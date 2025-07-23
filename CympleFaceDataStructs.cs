@@ -48,6 +48,10 @@ namespace CympleFaceTracking
         public float Tongue_Up_Down;
         public float TongueWide;
         public float TongueRoll;
+        public float EyeWideLeft;
+        public float EyeWideRight;
+        public float BrowLeftUpDown;
+        public float BrowRightUpDown;
     }
     public static class Constants
     {
@@ -99,6 +103,10 @@ namespace CympleFaceTracking
             "Tongue_Up_Down",
             "TongueWide",
             "TongueRoll",
+            "EyeWideLeft",
+            "EyeWideRight",
+            "BrowLeftUpDown",
+            "BrowRightUpDown",
         };
         
         public static int Port = 22999;

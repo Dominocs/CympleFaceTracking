@@ -48,9 +48,16 @@ namespace CympleFaceTracking
         {
             const int bufferSize = 255;
             var result = new StringBuilder(bufferSize);
-            GetPrivateProfileString(section, key, "", result, bufferSize, filePath);
+            // 默认开启
+            if (defaultValue)
+            {
+                GetPrivateProfileString(section, key, "1", result, bufferSize, filePath);
+            }else{
+                GetPrivateProfileString(section, key, "", result, bufferSize, filePath);
+            }
 
-            string value = result.ToString().ToLower();
+
+                string value = result.ToString().ToLower();
             // 支持"true"/"1"为真，"false"/"0"为假
             return value == "1" || value == "true";
         }
@@ -79,12 +86,12 @@ namespace CympleFaceTracking
                 Logger.LogError("Cymple face INI file not found");
             }
             else{
-                eyeEnabled = GetBoolValue(iniDir, "Function Switch", "cymple_eye_sw");
-                lipEnabled = GetBoolValue(iniDir, "Function Switch", "cymple_mouth_sw");
+                eyeEnabled = GetBoolValue(iniDir, "Function Switch", "cymple_eye_sw", true);
+                lipEnabled = GetBoolValue(iniDir, "Function Switch", "cymple_mouth_sw", true);
             }
             Logger.LogInformation($"CympleFace module eye: {eyeEnabled} mouth: {lipEnabled}");
             trackingSupported = (eyeEnabled, lipEnabled);
-            ModuleInformation.Name = "Cymple Facial Tracking V1.2.2";
+            ModuleInformation.Name = "Cymple Facial Tracking V1.3.0";
             if (img != null)
             {
                 List<Stream> streams = new List<Stream>();
@@ -215,9 +222,33 @@ namespace CympleFaceTracking
             // Use raw eye openness values
             UnifiedTracking.Data.Eye.Left.Openness = 1.0f - _latestData.EyeLidCloseLeft;
             UnifiedTracking.Data.Eye.Right.Openness = 1.0f - _latestData.EyeLidCloseRight;
-            
-            // Pupil dilation - raw values
-            UnifiedTracking.Data.Eye._minDilation = 0;
+
+            // Eye wide values
+            UnifiedTracking.Data.Shapes[(int)UnifiedExpressions.EyeWideLeft].Weight = _latestData.EyeWideLeft;
+            UnifiedTracking.Data.Shapes[(int)UnifiedExpressions.EyeWideRight].Weight = _latestData.EyeWideRight;
+
+            // Brow values
+            if(_latestData.BrowLeftUpDown > 0)
+            {
+                UnifiedTracking.Data.Shapes[(int)UnifiedExpressions.BrowInnerUpLeft].Weight = _latestData.BrowLeftUpDown;
+                UnifiedTracking.Data.Shapes[(int)UnifiedExpressions.BrowLowererLeft].Weight = 0;
+            }else
+            {
+                UnifiedTracking.Data.Shapes[(int)UnifiedExpressions.BrowInnerUpLeft].Weight = 0;
+                UnifiedTracking.Data.Shapes[(int)UnifiedExpressions.BrowLowererLeft].Weight = -_latestData.BrowLeftUpDown;
+            }
+            if(_latestData.BrowRightUpDown > 0)
+            {
+                UnifiedTracking.Data.Shapes[(int)UnifiedExpressions.BrowInnerUpRight].Weight = _latestData.BrowRightUpDown;
+                UnifiedTracking.Data.Shapes[(int)UnifiedExpressions.BrowLowererRight].Weight = 0;
+            }else
+            {
+                UnifiedTracking.Data.Shapes[(int)UnifiedExpressions.BrowInnerUpRight].Weight = 0;
+                UnifiedTracking.Data.Shapes[(int)UnifiedExpressions.BrowLowererRight].Weight = -_latestData.BrowRightUpDown;
+            }
+
+                // Pupil dilation - raw values
+                UnifiedTracking.Data.Eye._minDilation = 0;
             UnifiedTracking.Data.Eye._maxDilation = 10;
             UnifiedTracking.Data.Eye.Left.PupilDiameter_MM = 5.0f + _latestData.Eye_Pupil_Left * 5.0f;
             UnifiedTracking.Data.Eye.Right.PupilDiameter_MM = 5.0f + _latestData.Eye_Pupil_Right * 5.0f;
@@ -225,6 +256,7 @@ namespace CympleFaceTracking
             // Eye squint - raw values
             UnifiedTracking.Data.Shapes[(int)UnifiedExpressions.EyeSquintLeft].Weight = _latestData.EyeSquintLeft;
             UnifiedTracking.Data.Shapes[(int)UnifiedExpressions.EyeSquintRight].Weight = _latestData.EyeSquintRight;
+
         }
 
         private void UpdateFacialExpressions()
@@ -477,6 +509,10 @@ namespace CympleFaceTracking
                 case 36: data.Tongue_Up_Down = value; break;
                 case 37: data.TongueWide = value; break;
                 case 38: data.TongueRoll = value; break;
+                case 39: data.EyeWideLeft = value; break;
+                case 40: data.EyeWideRight = value; break;
+                case 41: data.BrowLeftUpDown = value; break;
+                case 42: data.BrowRightUpDown = value; break;
             }
         }
 
