@@ -34,7 +34,7 @@ namespace CympleFaceTracking
         private bool disconnectWarned = false;
         private Thread _thread;
         private (bool, bool) validateModule = (false, false);
-        
+        private readonly object _dataLock = new object();
 
         public override (bool SupportsEye, bool SupportsExpression) Supported => (true, true);
         // This is the first function ran by VRCFaceTracking. Make sure to completely initialize 
@@ -91,7 +91,7 @@ namespace CympleFaceTracking
             }
             Logger.LogInformation($"CympleFace module eye: {eyeEnabled} mouth: {lipEnabled}");
             trackingSupported = (eyeEnabled, lipEnabled);
-            ModuleInformation.Name = "Cymple Facial Tracking V1.3.0";
+            ModuleInformation.Name = "Cymple Facial Tracking V1.3.2";
             if (img != null)
             {
                 List<Stream> streams = new List<Stream>();
@@ -106,16 +106,18 @@ namespace CympleFaceTracking
             _thread.Start();
             return trackingSupported;
         }
-        private void ReadLoop()
+        private async void ReadLoop()
         {
             Logger.LogInformation("CympleFace readLoop start.");
-            while (!_isExiting)
+            while (!_isExiting && _CympleFaceConnection != null)
             {
                 // Read data from UDP
                 try
                 {
-                    // Grab the packet - will block but with a timeout set in the init function
-                    Byte[] receiveBytes = _CympleFaceConnection.Receive(ref _CympleFaceRemoteEndpoint);
+                    // 使用无参数的 ReceiveAsync()。它会返回一个包含新分配的缓冲区的结果。
+                    UdpReceiveResult result = await _CympleFaceConnection.ReceiveAsync();
+                    // 直接从结果中获取缓冲区
+                    byte[] receiveBytes = result.Buffer;
 
                     if (receiveBytes.Length < 12) // At least prefix, flags, type, length
                     {
@@ -179,37 +181,39 @@ namespace CympleFaceTracking
 
             // Update expressions with the latest data
             UpdateExpressions();
-            
             // Add a small sleep to prevent CPU hogging, similar to ETVRTrackingModule
-            Thread.Sleep(5);
+            Thread.Sleep(10);
         }
         private void UpdateExpressions()
         {
-            // Update eye tracking data
-            if ((_latestData.Flags & FLAG_EYE_E) != 0)
+            lock (_dataLock)
             {
-                if (false == validateModule.Item1)
+                // Update eye tracking data
+                if ((_latestData.Flags & FLAG_EYE_E) != 0)
                 {
-                    validateModule.Item1 = true;
-                    Logger.LogInformation("eye tracking activated");
+                    if (false == validateModule.Item1)
+                    {
+                        validateModule.Item1 = true;
+                        Logger.LogInformation("eye tracking activated");
+                    }
+                    else
+                    {
+                        UpdateEyeData();
+                    }
                 }
-                else
+
+                // Update facial expressions
+                if ((_latestData.Flags & FLAG_MOUTH_E) != 0)
                 {
-                    UpdateEyeData();
-                }
-            }
-            
-            // Update facial expressions
-            if ((_latestData.Flags & FLAG_MOUTH_E) != 0)
-            {
-                if (false == validateModule.Item2)
-                {
-                    validateModule.Item2 = true;
-                    Logger.LogInformation("facial expression tracking activated");
-                }
-                else
-                {
-                    UpdateFacialExpressions();
+                    if (false == validateModule.Item2)
+                    {
+                        validateModule.Item2 = true;
+                        Logger.LogInformation("facial expression tracking activated");
+                    }
+                    else
+                    {
+                        UpdateFacialExpressions();
+                    }
                 }
             }
         }
@@ -436,13 +440,15 @@ namespace CympleFaceTracking
                 Logger.LogWarning($"Message too short: got {receiveBytes.Length} bytes, expected {expectedLength}");
                 return;
             }
-            
-            // More efficient bulk reading
-            for (int i = 0; i < Constants.blendShapeNames.Length; i++)
+
+            lock (_dataLock)
             {
-                float value = BitConverter.ToSingle(receiveBytes, offset);
-                SetBlendshapeValue(ref trackingData, i, value);
-                offset += 4;
+                for (int i = 0; i < Constants.blendShapeNames.Length; i++)
+                {
+                    float value = BitConverter.ToSingle(receiveBytes, offset);
+                    SetBlendshapeValue(ref trackingData, i, value);
+                    offset += 4;
+                }
             }
         }
 
