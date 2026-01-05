@@ -81,7 +81,56 @@ namespace CympleFaceTracking
 
             _latestData = new CympleFaceDataStructs();
 
-            string iniDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".wine", "drive_c", "Cymple", "iniFile.ini");
+            string iniDir;
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                iniDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Cymple", "iniFile.ini");
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                // Try multiple possible paths for Linux (Wine and Proton)
+                string[] possiblePaths = {
+                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".wine", "drive_c", "Cymple", "iniFile.ini"),
+                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".steam", "steam", "steamapps", "compatdata", "*", "pfx", "drive_c", "Cymple", "iniFile.ini")
+                };
+                iniDir = "";
+                foreach (var path in possiblePaths)
+                {
+                    if (path.Contains("*"))
+                    {
+                        // For Proton path with wildcard, try to find matching directories
+                        string basePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".steam", "steam", "steamapps", "compatdata");
+                        if (Directory.Exists(basePath))
+                        {
+                            var compatDirs = Directory.GetDirectories(basePath);
+                            foreach (var dir in compatDirs)
+                            {
+                                string protonIniPath = Path.Combine(dir, "pfx", "drive_c", "Cymple", "iniFile.ini");
+                                if (File.Exists(protonIniPath))
+                                {
+                                    iniDir = protonIniPath;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    else if (File.Exists(path))
+                    {
+                        iniDir = path;
+                        break;
+                    }
+                    if (!string.IsNullOrEmpty(iniDir)) break;
+                }
+                if (string.IsNullOrEmpty(iniDir))
+                {
+                    Logger.LogError("Cymple face INI file not found in any expected location");
+                }
+            }
+            else
+            {
+                Logger.LogError("Unsupported OS for Cymple face INI file");
+                iniDir = "";
+            }
             bool eyeEnabled = false;
             bool lipEnabled = false;
             if (!File.Exists(iniDir))
