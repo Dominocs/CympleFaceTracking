@@ -84,7 +84,7 @@ namespace CympleFaceTracking
             string iniDir;
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                iniDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Cymple", "iniFile.ini");
+                iniDir = @"C:\Cymple\iniFile.ini";
             }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
