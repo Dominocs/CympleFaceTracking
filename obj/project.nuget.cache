@@ -1,8 +1,15 @@
 {
   "version": 2,
-  "dgSpecHash": "zQPjFdLCTs4=",
+  "dgSpecHash": "73b5f21FYe0=",
   "success": true,
-  "projectFilePath": "E:\\Project_Cymple\\CympleFaceTracking\\CympleFaceTracking.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "/home/suqing/CympleFaceTracking_for_linux/CympleFaceTracking.csproj",
+  "expectedPackageFiles": [
+    "/home/suqing/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/8.0.0/microsoft.extensions.dependencyinjection.abstractions.8.0.0.nupkg.sha512",
+    "/home/suqing/.nuget/packages/microsoft.extensions.logging.abstractions/8.0.0/microsoft.extensions.logging.abstractions.8.0.0.nupkg.sha512",
+    "/home/suqing/.nuget/packages/microsoft.win32.systemevents/8.0.0/microsoft.win32.systemevents.8.0.0.nupkg.sha512",
+    "/home/suqing/.nuget/packages/system.drawing.common/8.0.0/system.drawing.common.8.0.0.nupkg.sha512",
+    "/home/suqing/.nuget/packages/microsoft.netcore.app.ref/8.0.22/microsoft.netcore.app.ref.8.0.22.nupkg.sha512",
+    "/home/suqing/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.22/microsoft.aspnetcore.app.ref.8.0.22.nupkg.sha512"
+  ],
   "logs": []
 }
