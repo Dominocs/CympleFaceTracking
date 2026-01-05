@@ -40,26 +40,29 @@ namespace CympleFaceTracking
         // This is the first function ran by VRCFaceTracking. Make sure to completely initialize 
         // your tracking interface or the data to be accepted by VRCFaceTracking here. This will let 
         // VRCFaceTracking know what data is available to be sent from your tracking interface at initialization.
-        [DllImport("kernel32", CharSet = CharSet.Unicode)]
-        private static extern int GetPrivateProfileString(
-        string section, string key, string defaultValue,
-        StringBuilder result, int size, string filePath);
         public bool GetBoolValue(string filePath, string section, string key, bool defaultValue = false)
         {
-            const int bufferSize = 255;
-            var result = new StringBuilder(bufferSize);
-            // 默认开启
-            if (defaultValue)
+            if (!File.Exists(filePath)) return defaultValue;
+            var lines = File.ReadAllLines(filePath);
+            bool inSection = false;
+            foreach (var line in lines)
             {
-                GetPrivateProfileString(section, key, "1", result, bufferSize, filePath);
-            }else{
-                GetPrivateProfileString(section, key, "", result, bufferSize, filePath);
+                var trimmed = line.Trim();
+                if (trimmed.StartsWith("[" + section + "]"))
+                {
+                    inSection = true;
+                }
+                else if (trimmed.StartsWith("[") && inSection)
+                {
+                    inSection = false;
+                }
+                else if (inSection && trimmed.StartsWith(key + "="))
+                {
+                    var value = trimmed.Substring(key.Length + 1).Trim().ToLower();
+                    return value == "1" || value == "true";
+                }
             }
-
-
-                string value = result.ToString().ToLower();
-            // 支持"true"/"1"为真，"false"/"0"为假
-            return value == "1" || value == "true";
+            return defaultValue;
         }
 
         public override (bool eyeSuccess, bool expressionSuccess) Initialize(bool eyeAvailable, bool expressionAvailable)
@@ -78,7 +81,56 @@ namespace CympleFaceTracking
 
             _latestData = new CympleFaceDataStructs();
 
-            string iniDir = @"C:\Cymple\iniFile.ini";
+            string iniDir;
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                iniDir = @"C:\Cymple\iniFile.ini";
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                // Try multiple possible paths for Linux (Wine and Proton)
+                string[] possiblePaths = {
+                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".wine", "drive_c", "Cymple", "iniFile.ini"),
+                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".steam", "steam", "steamapps", "compatdata", "*", "pfx", "drive_c", "Cymple", "iniFile.ini")
+                };
+                iniDir = "";
+                foreach (var path in possiblePaths)
+                {
+                    if (path.Contains("*"))
+                    {
+                        // For Proton path with wildcard, try to find matching directories
+                        string basePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".steam", "steam", "steamapps", "compatdata");
+                        if (Directory.Exists(basePath))
+                        {
+                            var compatDirs = Directory.GetDirectories(basePath);
+                            foreach (var dir in compatDirs)
+                            {
+                                string protonIniPath = Path.Combine(dir, "pfx", "drive_c", "Cymple", "iniFile.ini");
+                                if (File.Exists(protonIniPath))
+                                {
+                                    iniDir = protonIniPath;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    else if (File.Exists(path))
+                    {
+                        iniDir = path;
+                        break;
+                    }
+                    if (!string.IsNullOrEmpty(iniDir)) break;
+                }
+                if (string.IsNullOrEmpty(iniDir))
+                {
+                    Logger.LogError("Cymple face INI file not found in any expected location");
+                }
+            }
+            else
+            {
+                Logger.LogError("Unsupported OS for Cymple face INI file");
+                iniDir = "";
+            }
             bool eyeEnabled = false;
             bool lipEnabled = false;
             if (!File.Exists(iniDir))
