@@ -1,23 +1,23 @@
-﻿using System;
-using System.Threading;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Diagnostics;
-
+using System.Threading;
 using VRCFaceTracking;
-using Microsoft.Extensions.Logging;
-using VRCFaceTracking.Core.Types;
 using VRCFaceTracking.Core.Params.Data;
 using VRCFaceTracking.Core.Params.Expressions;
-using System.Drawing.Imaging;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Reflection;
+using VRCFaceTracking.Core.Types;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 namespace CympleFaceTracking
@@ -91,7 +91,7 @@ namespace CympleFaceTracking
             }
             Logger.LogInformation($"CympleFace module eye: {eyeEnabled} mouth: {lipEnabled}");
             trackingSupported = (eyeEnabled, lipEnabled);
-            ModuleInformation.Name = "Cymple Facial Tracking V1.3.2";
+            ModuleInformation.Name = "Cymple Facial Tracking V1.3.5";
             if (img != null)
             {
                 List<Stream> streams = new List<Stream>();
@@ -300,9 +300,12 @@ namespace CympleFaceTracking
             shapes[(int)UnifiedExpressions.MouthUpperUpLeft].Weight = _latestData.LipRaise_L;
             shapes[(int)UnifiedExpressions.MouthUpperUpRight].Weight = _latestData.LipRaise_R;
             
-            shapes[(int)UnifiedExpressions.MouthUpperDeepenLeft].Weight = _latestData.LipDepress_L;
-            shapes[(int)UnifiedExpressions.MouthUpperDeepenRight].Weight = _latestData.LipDepress_R;
-            
+            shapes[(int)UnifiedExpressions.MouthUpperDeepenLeft].Weight = _latestData.LipRaise_L;
+            shapes[(int)UnifiedExpressions.MouthUpperDeepenRight].Weight = _latestData.LipRaise_R;
+
+            shapes[(int)UnifiedExpressions.MouthLowerDownLeft].Weight = _latestData.LipDepress_L;
+            shapes[(int)UnifiedExpressions.MouthLowerDownRight].Weight = _latestData.LipDepress_R;
+
             // Lip funnel/pucker
             shapes[(int)UnifiedExpressions.LipFunnelUpperLeft].Weight = 
             shapes[(int)UnifiedExpressions.LipFunnelUpperRight].Weight = 
@@ -390,6 +393,22 @@ namespace CympleFaceTracking
             shapes[(int)UnifiedExpressions.MouthCornerSlantRight].Weight = _latestData.MouthSmileRight;
             shapes[(int)UnifiedExpressions.MouthFrownLeft].Weight = _latestData.MouthSadLeft;
             shapes[(int)UnifiedExpressions.MouthFrownRight].Weight = _latestData.MouthSadRight;
+
+
+            // These shapes are not tracked at all by Cymple, but instead are being treated as enhancements to driving the shapes above.
+
+            #region Emulated Unified Mapping
+
+            shapes[(int)UnifiedExpressions.CheekSquintLeft].Weight = _latestData.MouthSmileLeft;
+            shapes[(int)UnifiedExpressions.CheekSquintRight].Weight = _latestData.MouthSmileRight;
+
+            shapes[(int)UnifiedExpressions.MouthDimpleLeft].Weight = _latestData.MouthSmileLeft;
+            shapes[(int)UnifiedExpressions.MouthDimpleRight].Weight = _latestData.MouthSmileRight;
+
+            shapes[(int)UnifiedExpressions.MouthStretchLeft].Weight = _latestData.MouthSadLeft;
+            shapes[(int)UnifiedExpressions.MouthStretchRight].Weight = _latestData.MouthSadRight;
+
+            #endregion
         }
 
         private void UpdateTongueExpressions(ref UnifiedExpressionShape[] shapes)
