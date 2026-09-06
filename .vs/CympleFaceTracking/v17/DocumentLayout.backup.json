@@ -17,7 +17,7 @@
       "VerticalTabListWidth": 256,
       "DocumentGroups": [
         {
-          "DockedWidth": 198,
+          "DockedWidth": 350,
           "SelectedChildIndex": 0,
           "Children": [
             {
@@ -28,11 +28,17 @@
               "RelativeDocumentMoniker": "CympleFaceApi.cs",
               "ToolTip": "E:\\Project_Cymple\\CympleFaceTracking\\CympleFaceApi.cs",
               "RelativeToolTip": "CympleFaceApi.cs",
-              "ViewState": "AgIAAHgBAAAAAAAAAAAAAI0BAAA8AAAAAAAAAA==",
+              "ViewState": "AgIAAGEAAAAAAAAAAAAuwJEAAABdAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-17T09:02:52.933Z",
+              "WhenOpened": "2026-02-09T18:13:24.293Z",
               "EditorCaption": ""
-            },
+            }
+          ]
+        },
+        {
+          "DockedWidth": 50,
+          "SelectedChildIndex": 0,
+          "Children": [
             {
               "$type": "Document",
               "DocumentIndex": 1,
@@ -41,9 +47,10 @@
               "RelativeDocumentMoniker": "CympleFaceDataStructs.cs",
               "ToolTip": "E:\\Project_Cymple\\CympleFaceTracking\\CympleFaceDataStructs.cs",
               "RelativeToolTip": "CympleFaceDataStructs.cs",
-              "ViewState": "AgIAAAgAAAAAAAAAAAAuwCIAAAAhAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAAkAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-30T08:20:22.697Z"
+              "WhenOpened": "2025-05-30T08:20:22.697Z",
+              "EditorCaption": ""
             }
           ]
         }

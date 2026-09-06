@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PlatformTarget>x64</PlatformTarget>
+    <ModuleOutputDirectory Condition="'$(ModuleOutputDirectory)' == ''">$(MSBuildThisFileDirectory)..\bin\x64\Release\net7.0</ModuleOutputDirectory>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CympleFaceTracking">
+      <HintPath>$(ModuleOutputDirectory)\CympleFaceTracking.dll</HintPath>
+    </Reference>
+    <Reference Include="VRCFaceTracking.Core">
+      <HintPath>..\VRCFaceTracking.Core.dll</HintPath>
+    </Reference>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
+  </ItemGroup>
+</Project>

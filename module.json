@@ -3,8 +3,8 @@
   "AuthorName": "Dominocs",
   "DllFileName": "CympleFaceTracking.dll",
   "Downloads": 0,
-  "DownloadUrl": "https://github.com/Dominocs/CympleFaceTracking/releases/download/v1.0/CympleFaceTracking.zip",
-  "LastUpdated": "2024-03-10T01:00:00Z",
+  "DownloadUrl": "https://github.com/Dominocs/CympleFaceTracking/releases/download/v1.5.2/CympleFaceTracking.zip",
+  "LastUpdated": "2026-09-06T00:00:00Z",
   "ModuleDescription": "VRCFaceTracking module for project cymple",
   "ModuleName": "cympleFaceTracking",
   "ModulePageUrl": "https://github.com/Dominocs/CympleFaceTracking",
@@ -12,5 +12,5 @@
   "Ratings": 0,
   "RatingSum": 0,
   "UsageInstructions": "For complete instructions, please refer to the project page.",
-  "Version": "1.0"
+  "Version": "1.5.2"
 }
